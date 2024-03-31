@@ -6,6 +6,7 @@ package cn.harryh.arkpets;
 import cn.harryh.arkpets.animations.AnimClip;
 import cn.harryh.arkpets.animations.AnimClip.AnimStage;
 import cn.harryh.arkpets.animations.AnimClipGroup;
+import cn.harryh.arkpets.animations.AnimComposer;
 import cn.harryh.arkpets.animations.AnimData;
 import cn.harryh.arkpets.assets.AssetItem;
 import cn.harryh.arkpets.transitions.TernaryFunction;
@@ -106,32 +107,21 @@ public class ArkChar {
         stageInsertMap = new HashMap<>();
         for (AnimStage stage : animList.clusterByStage().keySet()) {
             // Figure out the suitable canvas size
-            AnimClipGroup stageClips = animList.findAnimations(stage);
-            double maxHypSize = 0;
-            for (int i = 0; i < stageClips.size(); i++) {
-                camera.setInsertMaxed();
-                adjustCanvas(stageClips.get(i));
-                if (camera.isInsertMaxed())
-                    continue;
-                double hypSize = Math.hypot(camera.getWidth(), camera.getHeight());
-                if (hypSize > maxHypSize) {
-                    maxHypSize = hypSize;
-                    stageInsertMap.put(stage, camera.getInsert().clone());
-                }
-            }
-            // See if it succeeded
-            if (!stageInsertMap.containsKey(stage)) {
-                stageInsertMap.put(stage, new Insert((canvasReserveLength << 1) - (canvasMaxSize >> 1)));
-                Logger.warn("Character", stage + " figuring camera size failed");
-            } else {
-                camera.setInsert(stageInsertMap.get(stage));
+            adjustCanvas(animList.findAnimations(stage));
+            if (!camera.isInsertMaxed()) {
+                // Succeeded
+                stageInsertMap.put(stage, camera.getInsert().clone());
                 Logger.info("Character", stage + " using " + camera);
+            } else {
+                stageInsertMap.put(stage, new Insert((canvasReserveLength << 1) - (canvasMaxSize >> 1)));
+                Logger.warn("Character", stage + " using naive camera since the auto fitting has failed");
             }
         }
         camera.setInsertMaxed();
     }
 
     /** Sets the canvas with the specified background color.
+     * @param bgColor The background color which can include alpha value.
      */
     public void setCanvas(Color bgColor) {
         // Set position (centered)
@@ -171,106 +161,86 @@ public class ArkChar {
         return pixel;
     }
 
-    private void adjustCanvas(AnimClip animClip) {
-        composer.reset();
-        composer.offer(new AnimData(animClip));
-        position.reset(camera.getWidth() >> 1, position.end().y, position.end().z);
-        position.setToEnd();
-        animationState.update(animationState.getCurrent(0).getAnimation().getDuration() / 2); // Take the middle frame as sample
-
-        FrameBuffer fbo = new FrameBuffer(Format.RGBA8888, camera.getWidth(), camera.getHeight(), false);
-        fbo.begin();
-        renderToBatch();
-        Pixmap snapshot = new Pixmap(camera.getWidth(), camera.getHeight(), Format.RGBA8888);
-        Gdx.gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
-        Gdx.gl.glReadPixels(0, 0, snapshot.getWidth(), snapshot.getHeight(),
-                GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, snapshot.getPixels());
-        fbo.end();
-
-        if (camera.isInsertMaxed())
-            camera.cropTo(snapshot, false, true);
-        else
-            camera.extendTo(snapshot, false, true);
-        fbo.dispose();
-        snapshot.dispose();
-    }
-
-    protected void adjustCanvas(AnimStage animStage) {
+    /** Adjusts the canvas' geometry to fit the given stage.
+     * @param animStage The stage to be fitted.
+     * @throws IndexOutOfBoundsException If the given stage isn't in the internal stage map.
+     */
+    public void adjustCanvas(AnimStage animStage) {
         if (!stageInsertMap.containsKey(animStage))
             throw new IndexOutOfBoundsException("No such key " + animStage);
         camera.setInsert(stageInsertMap.get(animStage));
     }
 
-    /** Renders the character to the Gdx 2D Batch.
-     * The animation will be updated by {@code Gdx.graphics.getDeltaTime()};
+    /** Renders the character to the graphics.
+     * The animation will be updated according to {@code Gdx.graphics.getDeltaTime()}.
      */
     protected void renderToBatch() {
-        // Apply Animation
+        // Update skeleton position
         position.reset(camera.getWidth() >> 1, position.end().y, position.end().z);
         position.addProgress(Gdx.graphics.getDeltaTime());
         offsetY.addProgress(Gdx.graphics.getDeltaTime());
         skeleton.setPosition(position.now().x, position.now().y + offsetY.now());
         skeleton.setScaleX(position.now().z);
         skeleton.updateWorldTransform();
+        // Apply current animation
         animationState.apply(skeleton);
         animationState.update(Gdx.graphics.getDeltaTime());
-        // Render the skeleton to the batch
+        // Reset the canvas
         ScreenUtils.clear(0, 0, 0, 0, true);
-        camera.update();
         batch.getProjectionMatrix().set(camera.combined);
+        // Render the skeleton
         batch.begin();
         batch.draw(bgTexture, 0, 0);
         renderer.draw(batch, skeleton);
         batch.end();
     }
 
-
-    protected static class AnimComposer {
-        protected final AnimationState state;
-        protected AnimData playing;
-
-        public AnimComposer(AnimationState boundState) {
-            AnimComposer composer = this;
-            state = boundState;
-            state.addListener(new AnimationState.AnimationStateAdapter() {
-                @Override
-                public void complete(AnimationState.TrackEntry entry) {
-                    if (composer.playing != null && !composer.playing.isEmpty() && entry.getAnimation() != null) {
-                        if (entry.getAnimation().getName().equals(composer.playing.animClip().fullName)) {
-                            AnimData completed = composer.playing;
-                            if (!completed.isLoop()) {
-                                composer.reset();
-                                if (completed.animNext() != null && !completed.animNext().isEmpty()) {
-                                    composer.offer(completed.animNext());
-                                }
-                            }
-                        }
+    private void adjustCanvas(AnimClipGroup animClips) {
+        float timePerSample = 16 / (float)fpsDefault;
+        // Prepare a Frame Buffer Object
+        camera.setInsertMaxed();
+        FrameBuffer fbo = new FrameBuffer(Format.RGBA8888, camera.getWidth(), camera.getHeight(), false);
+        fbo.begin();
+        ScreenUtils.clear(0, 0, 0, 0, true);
+        // Render all animations to the FBO
+        for (AnimClip animClip : animClips) {
+            composer.reset();
+            composer.offer(new AnimData(animClip));
+            float totalTime = animationState.getCurrent(0).getAnimation().getDuration();
+            if (totalTime > 0) {
+                if (totalTime <= timePerSample * 2) {
+                    // Render the middle frame as the only sample
+                    animationState.update(totalTime / 2);
+                    renderAsSnapshot();
+                } else {
+                    // Render each interval frame as samples
+                    for (float t = 0; t < totalTime; t += timePerSample) {
+                        renderAsSnapshot();
+                        animationState.update(timePerSample);
                     }
                 }
-            });
-        }
-
-        public boolean offer(AnimData animData) {
-            if (animData != null && !animData.isEmpty()) {
-                if (playing == null || playing.isEmpty() || (!playing.isStrict() && !playing.equals(animData))) {
-                    playing = animData;
-                    onApply(playing);
-                    state.setAnimation(0, playing.name(), playing.isLoop());
-                    return true;
-                }
             }
-            return false;
         }
+        // Take down the snapshot from the rendered FBO
+        Pixmap snapshot = Pixmap.createFromFrameBuffer(0, 0, camera.getWidth(), camera.getHeight());
+        // PixmapIO.writePNG(new FileHandle("temp/temp.png"), snapshot);
+        fbo.end();
+        fbo.dispose();
+        // Crop the canvas in order to fit the snapshot
+        camera.cropTo(snapshot, false, true);
+        snapshot.dispose();
+    }
 
-        public AnimData getPlaying() {
-            return playing;
-        }
+    private void renderAsSnapshot() {
+        position.reset(camera.getWidth() >> 1, position.end().y, position.end().z);
+        skeleton.setPosition(position.end().x, position.end().y + offsetY.end());
+        skeleton.setScaleX(position.end().z);
+        skeleton.updateWorldTransform();
+        animationState.apply(skeleton);
+        batch.getProjectionMatrix().set(camera.combined);
 
-        public void reset() {
-            playing = null;
-        }
-
-        protected void onApply(AnimData playing) {
-        }
-    } // End class AnimComposer
-} // End class ArkChar
+        batch.begin();
+        renderer.draw(batch, skeleton);
+        batch.end();
+    }
+}

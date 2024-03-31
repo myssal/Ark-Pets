@@ -17,7 +17,7 @@ public class DynamicOrthographicCamara extends OrthographicCamera {
     protected final Insert maxInsert = new Insert();
     protected final Insert minInsert = new Insert();
 
-    protected static final int alphaThreshold = 128;
+    protected static final int alphaThreshold = 255;
     protected static final int stepLength = 2;
     protected static final boolean cameraYDown = false;
 
@@ -53,12 +53,6 @@ public class DynamicOrthographicCamara extends OrthographicCamera {
     public void cropTo(Pixmap pixmap, boolean flippedX, boolean flippedY) {
         Insert insert = getFittedInsert(pixmap, flippedX, flippedY);
         insert.limitMax(curInsert);
-        setInsert(insert);
-    }
-
-    public void extendTo(Pixmap pixmap, boolean flippedX, boolean flippedY) {
-        Insert insert = getFittedInsert(pixmap, flippedX, flippedY);
-        insert.limitMin(curInsert);
         setInsert(insert);
     }
 
@@ -153,7 +147,7 @@ public class DynamicOrthographicCamara extends OrthographicCamera {
     }
 
     public void setInsertMaxed() {
-        curInsert.set(maxInsert);
+        setInsert(maxInsert);
     }
 
     @Override
