@@ -93,6 +93,5 @@ public class MemberTrayProxy extends MemberTray {
     @Override
     public void remove() {
         hostTray.removeMemberTray(popMenu);
-        sendOperation(SocketData.Operation.LOGOUT);
     }
 }

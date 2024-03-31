@@ -138,7 +138,6 @@ public final class SocketServer {
                     case CHANGE_STAGE           -> tray.onChangeStage();
                 }
             } catch (JSONException ignored) {
-
             }
         }
 

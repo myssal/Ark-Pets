@@ -19,8 +19,8 @@ import java.awt.geom.AffineTransform;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static cn.harryh.arkpets.Const.iconFilePng;
 import static cn.harryh.arkpets.Const.easingDuration;
+import static cn.harryh.arkpets.Const.iconFilePng;
 
 
 public class MemberTrayImpl extends MemberTray {
@@ -165,9 +165,9 @@ public class MemberTrayImpl extends MemberTray {
         Logger.info("MemberTray", "Integrated tray service connected");
         SystemTray.getSystemTray().remove(icon);
         client.sendRequest(SocketData.ofLogin(uuid, name));
+        if (arkPets.canChangeStage())
+            sendOperation(SocketData.Operation.CAN_CHANGE_STAGE);
         for (MenuElement element : popMenu.getSubElements()) {
-            if (arkPets.canChangeStage())
-                sendOperation(SocketData.Operation.CAN_CHANGE_STAGE);
             if (element.equals(optKeepAnimDis))
                 sendOperation(SocketData.Operation.KEEP_ACTION);
             if (element.equals(optTransparentDis))

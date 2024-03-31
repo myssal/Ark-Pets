@@ -61,7 +61,7 @@ public class SocketClient {
                 Logger.error("SocketClient", "Connecting to server on port " + port + "failed, details see below.", e);
             }
         } catch (PortUtils.NoServerRunningException e) {
-            Logger.warn("SocketClient", "Connecting to server failed. " + e.getMessage());
+            Logger.debug("SocketClient", "Connecting to server failed. " + e.getMessage());
         }
     }
 
