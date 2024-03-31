@@ -9,6 +9,7 @@ import cn.harryh.arkpets.Const;
 import cn.harryh.arkpets.guitasks.CheckAppUpdateTask;
 import cn.harryh.arkpets.guitasks.GuiTask;
 import cn.harryh.arkpets.utils.*;
+import cn.harryh.arkpets.utils.GuiComponents.NamedOption;
 import com.jfoenix.controls.*;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
@@ -31,11 +32,11 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
     @FXML
     private Pane noticeBox;
     @FXML
-    private JFXComboBox<Float> configDisplayScale;
+    private JFXComboBox<NamedOption<Float>> configDisplayScale;
     @FXML
-    private JFXComboBox<Integer> configDisplayFps;
+    private JFXComboBox<NamedOption<Integer>> configDisplayFps;
     @FXML
-    public JFXComboBox<NamedIntegerOption> configCanvasSize;
+    public JFXComboBox<NamedOption<Integer>> configCanvasSize;
     @FXML
     private JFXComboBox<String> configLoggingLevel;
     @FXML
@@ -73,34 +74,36 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
     }
 
     private void initConfigDisplay() {
-        configDisplayScale.getItems().setAll(0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f);
-        configDisplayScale.getSelectionModel().select(app.config.display_scale);
-        configDisplayScale.valueProperty().addListener(observable -> {
-            if (configDisplayScale.getValue() != null) {
-                app.config.display_scale = configDisplayScale.getValue();
-                app.config.saveConfig();
-            }
-        });
-        configDisplayFps.getItems().setAll(25, 30, 45, 60);
-        configDisplayFps.getSelectionModel().select(Integer.valueOf(app.config.display_fps));
-        configDisplayFps.valueProperty().addListener(observable -> {
-            if (configDisplayFps.getValue() != null) {
-                app.config.display_fps = configDisplayFps.getValue();
-                app.config.saveConfig();
-            }
-        });
-        configCanvasSize.getItems().setAll(new NamedIntegerOption("最宽", 4),
-                new NamedIntegerOption("较宽", 8),
-                new NamedIntegerOption("标准", 16),
-                new NamedIntegerOption("较窄", 32),
-                new NamedIntegerOption("最窄", 0));
-        configCanvasSize.getSelectionModel().select(NamedIntegerOption.match(configCanvasSize.getItems(), app.config.canvas_fitting_samples));
-        configCanvasSize.valueProperty().addListener(observable -> {
-            if (configCanvasSize.getValue() != null) {
-                app.config.canvas_fitting_samples = configCanvasSize.getValue().value();
-                app.config.saveConfig();
-            }
-        });
+        new GuiComponents.ComboBoxSetup<>(configDisplayScale).setItems(new NamedOption<>("x0.5", 0.5f),
+                new NamedOption<>("x0.75", 0.75f),
+                new NamedOption<>("x1.0", 1f),
+                new NamedOption<>("x1.25", 1.25f),
+                new NamedOption<>("x1.5", 1.5f),
+                new NamedOption<>("x2.0", 2f))
+                .selectValue(app.config.display_scale, "x" + app.config.display_scale + "（自定义）")
+                .setOnNonNullValueUpdated((observable, oldValue, newValue) -> {
+                    app.config.display_scale = newValue.value();
+                    app.config.saveConfig();
+                });
+        new GuiComponents.ComboBoxSetup<>(configDisplayFps).setItems(new NamedOption<>("25", 25),
+                new NamedOption<>("30", 30),
+                new NamedOption<>("45", 45),
+                new NamedOption<>("60", 60))
+                .selectValue(app.config.display_fps, app.config.display_fps + "（自定义）")
+                .setOnNonNullValueUpdated((observable, oldValue, newValue) -> {
+                    app.config.display_fps = newValue.value();
+                    app.config.saveConfig();
+                });
+        new GuiComponents.ComboBoxSetup<>(configCanvasSize).setItems(new NamedOption<>("最宽", 4),
+                new NamedOption<>("较宽", 8),
+                new NamedOption<>("标准", 16),
+                new NamedOption<>("较窄", 32),
+                new NamedOption<>("最窄", 0))
+                .selectValue(app.config.canvas_fitting_samples, "每" + app.config.canvas_fitting_samples + "帧采样（自定义）")
+                .setOnNonNullValueUpdated((observable, oldValue, newValue) -> {
+                    app.config.canvas_fitting_samples = newValue.value();
+                    app.config.saveConfig();
+                });
     }
 
     private void initConfigAdvanced() {
@@ -272,20 +275,5 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
         ss.setPeriod(new Duration(5000));
         ss.setRestartOnFailure(true);
         ss.start();
-    }
-
-
-    private record NamedIntegerOption(String name, int value) {
-        @Override
-        public String toString() {
-            return name;
-        }
-
-        public static NamedIntegerOption match(List<NamedIntegerOption> candidateOptions, int targetValue) {
-            for (NamedIntegerOption i : candidateOptions)
-                if (i.value == targetValue)
-                    return i;
-            return null;
-        }
     }
 }
