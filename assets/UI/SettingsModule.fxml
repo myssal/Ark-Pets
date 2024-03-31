@@ -26,6 +26,10 @@
                     <Label text="最大帧率"/>
                     <JFXComboBox fx:id="configDisplayFps" prefWidth="100.0"/>
                 </HBox>
+                <HBox>
+                    <Label text="画布边界"/>
+                    <JFXComboBox fx:id="configCanvasSize" prefWidth="100.0"/>
+                </HBox>
                 <Separator/>
                 <Label styleClass="config-group-title" text="高级设置"/>
                 <HBox>

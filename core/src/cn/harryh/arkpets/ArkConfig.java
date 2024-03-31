@@ -50,6 +50,7 @@ public class ArkConfig {
     public boolean    behavior_allow_sit;
     public boolean    behavior_allow_walk;
     public boolean    behavior_do_peer_repulsion;
+    public int        canvas_fitting_samples;
     public String     character_asset;
     public JSONObject character_files;
     public String     character_label;

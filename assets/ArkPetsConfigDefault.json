@@ -4,6 +4,7 @@
     "behavior_allow_sit":true,
     "behavior_allow_walk":true,
     "behavior_do_peer_repulsion":true,
+    "canvas_fitting_samples":16,
     "character_asset":"",
     "character_files":{
 

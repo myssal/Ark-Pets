@@ -5,7 +5,6 @@ package cn.harryh.arkpets;
 
 import cn.harryh.arkpets.animations.AnimData;
 import cn.harryh.arkpets.animations.GeneralBehavior;
-import cn.harryh.arkpets.assets.AssetItem;
 import cn.harryh.arkpets.concurrent.SocketClient;
 import cn.harryh.arkpets.transitions.TernaryFunction;
 import cn.harryh.arkpets.transitions.TransitionFloat;
@@ -66,7 +65,7 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 		getHWndLoopCtrl = new LoopCtrl(1f / APP_FPS * 4);
 		// 2.Character setup
 		Logger.info("App", "Using model asset \"" + config.character_asset + "\"");
-		cha = new ArkChar(config.character_asset, new AssetItem.AssetAccessor(config.character_files), skelBaseScale);
+		cha = new ArkChar(config, skelBaseScale);
 		behavior = new GeneralBehavior(config, cha.animList);
 		cha.adjustCanvas(behavior.defaultAnim().animClip().stage);
 		cha.setAnimation(behavior.defaultAnim());

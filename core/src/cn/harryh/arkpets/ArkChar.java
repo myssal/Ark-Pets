@@ -8,7 +8,7 @@ import cn.harryh.arkpets.animations.AnimClip.AnimStage;
 import cn.harryh.arkpets.animations.AnimClipGroup;
 import cn.harryh.arkpets.animations.AnimComposer;
 import cn.harryh.arkpets.animations.AnimData;
-import cn.harryh.arkpets.assets.AssetItem;
+import cn.harryh.arkpets.assets.AssetItem.AssetAccessor;
 import cn.harryh.arkpets.transitions.TernaryFunction;
 import cn.harryh.arkpets.transitions.TransitionFloat;
 import cn.harryh.arkpets.transitions.TransitionVector3;
@@ -49,11 +49,10 @@ public class ArkChar {
     protected final HashMap<AnimStage, Insert> stageInsertMap;
 
     /** Initializes an ArkPets character.
-     * @param assetLocation The path string to the model's directory.
-     * @param assetAccessor The Asset Accessor of the model.
-     * @param scale The scale of the character.
+     * @param config The ArkPets Config instance which contains the asset's information and other essential settings.
+     * @param scale The scale of the skeleton.
      */
-    public ArkChar(String assetLocation, AssetItem.AssetAccessor assetAccessor, float scale) {
+    public ArkChar(ArkConfig config, float scale) {
         // 1.Graphics setup
         camera = new DynamicOrthographicCamara(canvasMaxSize, canvasMaxSize, Math.round(canvasReserveLength * scale));
         camera.setMaxInsert(0);
@@ -69,6 +68,8 @@ public class ArkChar {
         // 3.Skeleton setup
         SkeletonData skeletonData;
         try {
+            String assetLocation = config.character_asset;
+            AssetAccessor assetAccessor = new AssetAccessor(config.character_files);
             String path2atlas = assetLocation + separator + assetAccessor.getFirstFileOf(".atlas");
             String path2skel = assetLocation + separator + assetAccessor.getFirstFileOf(".skel");
             // Load atlas
@@ -107,7 +108,7 @@ public class ArkChar {
         stageInsertMap = new HashMap<>();
         for (AnimStage stage : animList.clusterByStage().keySet()) {
             // Figure out the suitable canvas size
-            adjustCanvas(animList.findAnimations(stage));
+            adjustCanvas(animList.findAnimations(stage), config.canvas_fitting_samples);
             if (!camera.isInsertMaxed()) {
                 // Succeeded
                 stageInsertMap.put(stage, camera.getInsert().clone());
@@ -195,8 +196,8 @@ public class ArkChar {
         batch.end();
     }
 
-    private void adjustCanvas(AnimClipGroup animClips) {
-        float timePerSample = 16 / (float)fpsDefault;
+    private void adjustCanvas(AnimClipGroup animClips, int fittingSamples) {
+        float timePerSample = fittingSamples / (float)fpsDefault;
         // Prepare a Frame Buffer Object
         camera.setInsertMaxed();
         FrameBuffer fbo = new FrameBuffer(Format.RGBA8888, camera.getWidth(), camera.getHeight(), false);
@@ -208,7 +209,7 @@ public class ArkChar {
             composer.offer(new AnimData(animClip));
             float totalTime = animationState.getCurrent(0).getAnimation().getDuration();
             if (totalTime > 0) {
-                if (totalTime <= timePerSample * 2) {
+                if (timePerSample <= 0 || totalTime <= timePerSample * 2) {
                     // Render the middle frame as the only sample
                     animationState.update(totalTime / 2);
                     renderAsSnapshot();

@@ -35,6 +35,8 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
     @FXML
     private JFXComboBox<Integer> configDisplayFps;
     @FXML
+    public JFXComboBox<NamedIntegerOption> configCanvasSize;
+    @FXML
     private JFXComboBox<String> configLoggingLevel;
     @FXML
     private Label exploreLogDir;
@@ -84,6 +86,18 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
         configDisplayFps.valueProperty().addListener(observable -> {
             if (configDisplayFps.getValue() != null) {
                 app.config.display_fps = configDisplayFps.getValue();
+                app.config.saveConfig();
+            }
+        });
+        configCanvasSize.getItems().setAll(new NamedIntegerOption("最宽", 4),
+                new NamedIntegerOption("较宽", 8),
+                new NamedIntegerOption("标准", 16),
+                new NamedIntegerOption("较窄", 32),
+                new NamedIntegerOption("最窄", 0));
+        configCanvasSize.getSelectionModel().select(NamedIntegerOption.match(configCanvasSize.getItems(), app.config.canvas_fitting_samples));
+        configCanvasSize.valueProperty().addListener(observable -> {
+            if (configCanvasSize.getValue() != null) {
+                app.config.canvas_fitting_samples = configCanvasSize.getValue().value();
                 app.config.saveConfig();
             }
         });
@@ -258,5 +272,20 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
         ss.setPeriod(new Duration(5000));
         ss.setRestartOnFailure(true);
         ss.start();
+    }
+
+
+    private record NamedIntegerOption(String name, int value) {
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        public static NamedIntegerOption match(List<NamedIntegerOption> candidateOptions, int targetValue) {
+            for (NamedIntegerOption i : candidateOptions)
+                if (i.value == targetValue)
+                    return i;
+            return null;
+        }
     }
 }
