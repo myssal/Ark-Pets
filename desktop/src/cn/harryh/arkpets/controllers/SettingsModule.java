@@ -9,7 +9,7 @@ import cn.harryh.arkpets.Const;
 import cn.harryh.arkpets.guitasks.CheckAppUpdateTask;
 import cn.harryh.arkpets.guitasks.GuiTask;
 import cn.harryh.arkpets.utils.*;
-import cn.harryh.arkpets.utils.GuiComponents.NamedOption;
+import cn.harryh.arkpets.utils.GuiComponents.NamedItem;
 import com.jfoenix.controls.*;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
@@ -32,11 +32,11 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
     @FXML
     private Pane noticeBox;
     @FXML
-    private JFXComboBox<NamedOption<Float>> configDisplayScale;
+    private JFXComboBox<NamedItem<Float>> configDisplayScale;
     @FXML
-    private JFXComboBox<NamedOption<Integer>> configDisplayFps;
+    private JFXComboBox<NamedItem<Integer>> configDisplayFps;
     @FXML
-    public JFXComboBox<NamedOption<Integer>> configCanvasSize;
+    public JFXComboBox<NamedItem<Integer>> configCanvasSize;
     @FXML
     private JFXComboBox<String> configLoggingLevel;
     @FXML
@@ -74,31 +74,31 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
     }
 
     private void initConfigDisplay() {
-        new GuiComponents.ComboBoxSetup<>(configDisplayScale).setItems(new NamedOption<>("x0.5", 0.5f),
-                new NamedOption<>("x0.75", 0.75f),
-                new NamedOption<>("x1.0", 1f),
-                new NamedOption<>("x1.25", 1.25f),
-                new NamedOption<>("x1.5", 1.5f),
-                new NamedOption<>("x2.0", 2f))
+        new GuiComponents.ComboBoxSetup<>(configDisplayScale).setItems(new NamedItem<>("x0.5", 0.5f),
+                new NamedItem<>("x0.75", 0.75f),
+                new NamedItem<>("x1.0", 1f),
+                new NamedItem<>("x1.25", 1.25f),
+                new NamedItem<>("x1.5", 1.5f),
+                new NamedItem<>("x2.0", 2f))
                 .selectValue(app.config.display_scale, "x" + app.config.display_scale + "（自定义）")
                 .setOnNonNullValueUpdated((observable, oldValue, newValue) -> {
                     app.config.display_scale = newValue.value();
                     app.config.saveConfig();
                 });
-        new GuiComponents.ComboBoxSetup<>(configDisplayFps).setItems(new NamedOption<>("25", 25),
-                new NamedOption<>("30", 30),
-                new NamedOption<>("45", 45),
-                new NamedOption<>("60", 60))
+        new GuiComponents.ComboBoxSetup<>(configDisplayFps).setItems(new NamedItem<>("25", 25),
+                new NamedItem<>("30", 30),
+                new NamedItem<>("45", 45),
+                new NamedItem<>("60", 60))
                 .selectValue(app.config.display_fps, app.config.display_fps + "（自定义）")
                 .setOnNonNullValueUpdated((observable, oldValue, newValue) -> {
                     app.config.display_fps = newValue.value();
                     app.config.saveConfig();
                 });
-        new GuiComponents.ComboBoxSetup<>(configCanvasSize).setItems(new NamedOption<>("最宽", 4),
-                new NamedOption<>("较宽", 8),
-                new NamedOption<>("标准", 16),
-                new NamedOption<>("较窄", 32),
-                new NamedOption<>("最窄", 0))
+        new GuiComponents.ComboBoxSetup<>(configCanvasSize).setItems(new NamedItem<>("最宽", 4),
+                new NamedItem<>("较宽", 8),
+                new NamedItem<>("标准", 16),
+                new NamedItem<>("较窄", 32),
+                new NamedItem<>("最窄", 0))
                 .selectValue(app.config.canvas_fitting_samples, "每" + app.config.canvas_fitting_samples + "帧采样（自定义）")
                 .setOnNonNullValueUpdated((observable, oldValue, newValue) -> {
                     app.config.canvas_fitting_samples = newValue.value();
@@ -170,15 +170,27 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
         configAutoStartup.setOnAction(e -> {
             if (configAutoStartup.isSelected()) {
                 if (ArkConfig.StartupConfig.addStartup()) {
-                    GuiPrefabs.DialogUtil.createCommonDialog(app.root, GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_SUCCESS_ALT, GuiPrefabs.Colors.COLOR_SUCCESS), "开机自启动", "开机自启动设置成功。",
-                            "下次开机时将会自动生成您最后一次启动的桌宠。", null).show();
+                    GuiPrefabs.DialogUtil.createCommonDialog(app.root,
+                            GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_SUCCESS_ALT, GuiPrefabs.Colors.COLOR_SUCCESS),
+                            "开机自启动",
+                            "开机自启动设置成功。",
+                            "下次开机时将会自动生成您最后一次启动的桌宠。",
+                            null).show();
                 } else {
                     if (ArkConfig.StartupConfig.generateScript() == null)
-                        GuiPrefabs.DialogUtil.createCommonDialog(app.root, GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_WARNING_ALT, GuiPrefabs.Colors.COLOR_WARNING), "开机自启动", "开机自启动设置失败。",
-                                "无法确认目标程序的位置，其原因和相关解决方案如下：", "为确保自启动服务的稳定性，直接打开的ArkPets的\".jar\"版启动器，是不支持配置自启动的。请使用exe版的安装包安装ArkPets后运行，或使用zip版的压缩包解压程序文件后运行。另外，当您使用错误的工作目录运行启动器时也可能出现此情况。").show();
+                        GuiPrefabs.DialogUtil.createCommonDialog(app.root,
+                                GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_WARNING_ALT, GuiPrefabs.Colors.COLOR_WARNING),
+                                "开机自启动",
+                                "开机自启动设置失败。",
+                                "无法确认目标程序的位置，其原因和相关解决方案如下：",
+                                "为确保自启动服务的稳定性，直接打开的ArkPets的\".jar\"版启动器，是不支持配置自启动的。请使用exe版的安装包安装ArkPets后运行，或使用zip版的压缩包解压程序文件后运行。另外，当您使用错误的工作目录运行启动器时也可能出现此情况。").show();
                     else
-                        GuiPrefabs.DialogUtil.createCommonDialog(app.root, GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_WARNING_ALT, GuiPrefabs.Colors.COLOR_WARNING), "开机自启动", "开机自启动设置失败。",
-                                "无法写入系统的启动目录，其原因可参见日志文件。", "这有可能是由于权限不足导致的。请尝试关闭反病毒软件，并以管理员权限运行启动器。").show();
+                        GuiPrefabs.DialogUtil.createCommonDialog(app.root,
+                                GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_WARNING_ALT, GuiPrefabs.Colors.COLOR_WARNING),
+                                "开机自启动",
+                                "开机自启动设置失败。",
+                                "无法写入系统的启动目录，其原因可参见日志文件。",
+                                "这有可能是由于权限不足导致的。请尝试关闭反病毒软件，并以管理员权限运行启动器。").show();
                     configAutoStartup.setSelected(false);
                 }
             } else {

@@ -23,6 +23,9 @@ import java.util.List;
 
 
 public class GuiComponents {
+    /** A useful tool to initialize a {@link Slider} control.
+     * @param <N> The value type of the Slider.
+     */
     @SuppressWarnings("UnusedReturnValue")
     abstract public static class SliderSetup<N extends Number> {
         protected final Slider slider;
@@ -111,28 +114,31 @@ public class GuiComponents {
     }
 
 
+    /** A useful tool to initialize a {@link ComboBox} control whose items are numeric values.
+     * @param <N> The value type of the items.
+     */
     @SuppressWarnings("UnusedReturnValue")
     public static class ComboBoxSetup<N extends Number> {
-        protected final ComboBox<NamedOption<N>> comboBox;
+        protected final ComboBox<NamedItem<N>> comboBox;
 
-        public ComboBoxSetup(ComboBox<NamedOption<N>> comboBox) {
+        public ComboBoxSetup(ComboBox<NamedItem<N>> comboBox) {
             this.comboBox = comboBox;
         }
 
         @SafeVarargs
-        public final ComboBoxSetup<N> setItems(NamedOption<N>... elements) {
+        public final ComboBoxSetup<N> setItems(NamedItem<N>... elements) {
             comboBox.getItems().setAll(elements);
             return this;
         }
 
         public final ComboBoxSetup<N> selectValue(N targetValue, String defaultName) {
-            if (NamedOption.match(comboBox.getItems(), targetValue) == null)
-                comboBox.getItems().add(new NamedOption<>(defaultName, targetValue));
-            comboBox.getSelectionModel().select(NamedOption.match(comboBox.getItems(), targetValue));
+            if (NamedItem.match(comboBox.getItems(), targetValue) == null)
+                comboBox.getItems().add(new NamedItem<>(defaultName, targetValue));
+            comboBox.getSelectionModel().select(NamedItem.match(comboBox.getItems(), targetValue));
             return this;
         }
 
-        public final ComboBoxSetup<N> setOnNonNullValueUpdated(ChangeListener<NamedOption<N>> listener) {
+        public final ComboBoxSetup<N> setOnNonNullValueUpdated(ChangeListener<NamedItem<N>> listener) {
             comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue != null)
                     listener.changed(observable, oldValue, newValue);
@@ -169,14 +175,14 @@ public class GuiComponents {
     }
 
 
-    public record NamedOption<N extends Number>(String name, N value) {
+    public record NamedItem<N extends Number>(String name, N value) {
         @Override
         public String toString() {
             return name;
         }
 
-        public static <N extends Number> NamedOption<N> match(List<NamedOption<N>> candidateOptions, N targetValue) {
-            for (NamedOption<N> i : candidateOptions)
+        public static <N extends Number> NamedItem<N> match(List<NamedItem<N>> candidateOptions, N targetValue) {
+            for (NamedItem<N> i : candidateOptions)
                 if (targetValue.equals(i.value))
                     return i;
             return null;

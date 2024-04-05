@@ -180,20 +180,32 @@ public final class ModelsModule implements Controller<ArkHomeFX> {
         } catch (FileNotFoundException e) {
             Logger.warn("ModelManager", "Failed to initialize model dataset due to file not found. (" + e.getMessage() + ")");
             if (doPopNotice) {
-                JFXDialog dialog = GuiPrefabs.DialogUtil.createCommonDialog(app.root, GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_WARNING_ALT, GuiPrefabs.Colors.COLOR_WARNING), "模型载入失败", "模型未成功载入：未找到数据集。",
-                        "模型数据集文件 " + PathConfig.fileModelsDataPath + " 可能不在工作目录下。\n请先前往 [选项] 进行模型下载。", null);
+                JFXDialog dialog = GuiPrefabs.DialogUtil.createCommonDialog(app.root,
+                        GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_WARNING_ALT, GuiPrefabs.Colors.COLOR_WARNING),
+                        "模型载入失败",
+                        "模型未成功载入：未找到数据集。",
+                        "模型数据集文件 " + PathConfig.fileModelsDataPath + " 可能不在工作目录下。\n请先前往 [选项] 进行模型下载。",
+                        null);
                 dialog.show();
             }
         } catch (ModelsDataset.DatasetKeyException e) {
             Logger.warn("ModelManager", "Failed to initialize model dataset due to dataset parsing error. (" + e.getMessage() + ")");
             if (doPopNotice)
-                GuiPrefabs.DialogUtil.createCommonDialog(app.root, GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_WARNING_ALT, GuiPrefabs.Colors.COLOR_WARNING), "模型载入失败", "模型未成功载入：数据集解析失败。",
-                        "模型数据集可能不完整，或无法被启动器正确识别。请尝试更新模型或更新软件。", null).show();
+                GuiPrefabs.DialogUtil.createCommonDialog(app.root,
+                        GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_WARNING_ALT, GuiPrefabs.Colors.COLOR_WARNING),
+                        "模型载入失败",
+                        "模型未成功载入：数据集解析失败。",
+                        "模型数据集可能不完整，或无法被启动器正确识别。请尝试更新模型或更新软件。",
+                        null).show();
         } catch (IOException e) {
             Logger.error("ModelManager", "Failed to initialize model dataset due to unknown reasons, details see below.", e);
             if (doPopNotice)
-                GuiPrefabs.DialogUtil.createCommonDialog(app.root, GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_WARNING_ALT, GuiPrefabs.Colors.COLOR_WARNING), "模型载入失败", "模型未成功载入：发生意外错误。",
-                        "失败原因概要：" + e.getLocalizedMessage(), null).show();
+                GuiPrefabs.DialogUtil.createCommonDialog(app.root,
+                        GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_WARNING_ALT, GuiPrefabs.Colors.COLOR_WARNING),
+                        "模型载入失败",
+                        "模型未成功载入：发生意外错误。",
+                        "失败原因概要：" + e.getLocalizedMessage(),
+                        null).show();
         }
         if (mngBtnComposer.getActivatedId() != 0)
             mngBtnComposer.activate(0);
@@ -570,8 +582,12 @@ public final class ModelsModule implements Controller<ArkHomeFX> {
         if (app.modelsDataset == null) {
             // Not loaded:
             if (doPopNotice)
-                GuiPrefabs.DialogUtil.createCommonDialog(app.root, GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_WARNING_ALT, GuiPrefabs.Colors.COLOR_WARNING), "未能加载模型", "请确保模型加载成功后再进行此操作。",
-                        "请先在[选项]中进行模型下载。\n如您已下载模型，请尝试点击[重载]按钮。", null).show();
+                GuiPrefabs.DialogUtil.createCommonDialog(app.root,
+                        GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_WARNING_ALT, GuiPrefabs.Colors.COLOR_WARNING),
+                        "未能加载模型",
+                        "请确保模型加载成功后再进行此操作。",
+                        "请先在[选项]中进行模型下载。\n如您已下载模型，请尝试点击[重载]按钮。",
+                        null).show();
             return false;
         } else {
             // Loaded:
