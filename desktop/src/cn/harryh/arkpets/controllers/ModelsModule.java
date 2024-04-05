@@ -200,35 +200,6 @@ public final class ModelsModule implements Controller<ArkHomeFX> {
         return false;
     }
 
-    private void initModelAssets(boolean doPopNotice) {
-        modelCellList = new ArrayList<>();
-        assetItemList = new AssetItemGroup();
-        if (!initModelsDataset(doPopNotice))
-            return;
-        try {
-            // Find every model assets.
-            assetItemList.addAll(app.modelsDataset.data.filter(AssetItem::isExisted));
-            if (assetItemList.isEmpty())
-                throw new IOException("Found no assets in the target directories.");
-            // Initialize list view:
-            searchModelView.getSelectionModel().getSelectedItems().addListener(
-                    (ListChangeListener<JFXListCell<AssetItem>>) (observable -> observable.getList().forEach(
-                            (Consumer<JFXListCell<AssetItem>>) cell -> selectModel(cell.getItem(), cell))
-                    )
-            );
-            searchModelView.setFixedCellSize(30);
-            // Write models to menu items.
-            assetItemList.forEach(assetItem -> modelCellList.add(getMenuItem(assetItem, searchModelView)));
-            Logger.debug("ModelManager", "Initialized model assets successfully.");
-        } catch (IOException e) {
-            // Explicitly set all lists to empty.
-            Logger.error("ModelManager", "Failed to initialize model assets due to unknown reasons, details see below.", e);
-            if (doPopNotice)
-                GuiPrefabs.DialogUtil.createCommonDialog(app.root, GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_WARNING_ALT, GuiPrefabs.Colors.COLOR_WARNING), "模型载入失败", "模型未成功载入：读取模型列表失败。",
-                        "失败原因概要：" + e.getLocalizedMessage(), null).show();
-        }
-    }
-
     private void initInfoPane() {
         toggleFilterPane.setOnAction(e -> infoPaneComposer.toggle(1, 0));
         toggleManagePane.setOnAction(e -> infoPaneComposer.toggle(2, 0));
@@ -244,7 +215,7 @@ public final class ModelsModule implements Controller<ArkHomeFX> {
         searchModelConfirm.setOnAction(e -> modelSearch(searchModelInput.getText()));
 
         searchModelReset.setOnAction(e -> app.popLoading(ev -> {
-            searchModelInput.setText("");
+            searchModelInput.clear();
             searchModelInput.requestFocus();
             filterTagSet.clear();
             modelSearch("");
@@ -429,60 +400,97 @@ public final class ModelsModule implements Controller<ArkHomeFX> {
     public void modelReload(boolean doPopNotice) {
         app.popLoading(e -> {
             Logger.info("ModelManager", "Reloading");
-            initModelAssets(doPopNotice);
-            initModelSearch();
-            // Setup filter pane
-            filterTagSet = FXCollections.observableSet();
-            filterTagSet.addListener((SetChangeListener<String>)change -> {
-                Logger.debug("ModelManager", "Filter tag " + change);
-                if (change.getElementAdded() == null && change.getElementRemoved() == null)
-                    return;
-                String s = change.getElementAdded() == null ? change.getElementRemoved() : change.getElementAdded();
-                String t = app.modelsDataset.sortTags == null ? s : app.modelsDataset.sortTags.getOrDefault(s, s);
-                for (Node node : filterPaneTagFlow.getChildren())
-                    if (node instanceof JFXButton tag && t.equals(tag.getText())) {
-                        String styleFrom = change.getElementAdded() == null ? "info-tag-badge-active" : "info-tag-badge";
-                        String styleTo = change.getElementAdded() == null ? "info-tag-badge" : "info-tag-badge-active";
-                        GuiPrefabs.replaceStyleClass(tag, styleFrom, styleTo);
-                    }
-            });
-            filterPaneTagFlow.getChildren().clear();
-            if (assetItemList != null && app.modelsDataset != null) {
-                ArrayList<String> sortTags = new ArrayList<>(assetItemList.extract(AssetItem.PropertyExtractor.ASSET_ITEM_SORT_TAGS));
-                sortTags.sort(Comparator.naturalOrder());
-                sortTags.forEach(s -> {
+            boolean willGc = modelCellList != null;
+            modelCellList = new ArrayList<>();
+            assetItemList = new AssetItemGroup();
+
+            if (initModelsDataset(doPopNotice)) {
+                // 1. Update list cells and asset items:
+                try {
+                    // Find every model assets.
+                    assetItemList.addAll(app.modelsDataset.data.filter(AssetItem::isExisted));
+                    if (assetItemList.isEmpty())
+                        throw new IOException("Found no assets in the target directories.");
+                    // Initialize list view.
+                    searchModelView.getSelectionModel().getSelectedItems().addListener(
+                            (ListChangeListener<JFXListCell<AssetItem>>) (observable -> observable.getList().forEach(
+                                    (Consumer<JFXListCell<AssetItem>>) cell -> selectModel(cell.getItem(), cell))
+                            )
+                    );
+                    searchModelView.setFixedCellSize(30);
+                    // Write models to menu items.
+                    assetItemList.forEach(assetItem -> modelCellList.add(getMenuItem(assetItem, searchModelView)));
+                    Logger.debug("ModelManager", "Initialized model assets successfully.");
+                } catch (IOException ex) {
+                    // Explicitly set all lists to empty.
+                    Logger.error("ModelManager", "Failed to initialize model assets due to unknown reasons, details see below.", ex);
+                    modelCellList = new ArrayList<>();
+                    assetItemList = new AssetItemGroup();
+                    if (doPopNotice)
+                        GuiPrefabs.DialogUtil.createCommonDialog(app.root,
+                                GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_WARNING_ALT, GuiPrefabs.Colors.COLOR_WARNING),
+                                "模型载入失败",
+                                "模型未成功载入：读取模型列表失败。",
+                                "失败原因概要：" + ex.getLocalizedMessage(),
+                                null).show();
+                }
+
+                // 2. Reset filter pane:
+                filterTagSet = FXCollections.observableSet();
+                filterTagSet.addListener((SetChangeListener<String>) change -> {
+                    Logger.debug("ModelManager", "Filter tag " + change);
+                    if (change.getElementAdded() == null && change.getElementRemoved() == null)
+                        return;
+                    String s = change.getElementAdded() == null ? change.getElementRemoved() : change.getElementAdded();
                     String t = app.modelsDataset.sortTags == null ? s : app.modelsDataset.sortTags.getOrDefault(s, s);
-                    JFXButton tag = new JFXButton(t);
-                    tag.getStyleClass().add("info-tag-badge");
-                    tag.setOnAction(ev -> {
-                        if (filterTagSet.contains(s))
-                            filterTagSet.remove(s);
-                        else
-                            filterTagSet.add(s);
-                        modelSearch(searchModelInput.getText());
-                    });
-                    filterPaneTagFlow.getChildren().add(tag);
-                });
-            }
-            // Update model list
-            modelSearch("");
-            // Select recent model
-            if (assetItemList != null && !modelCellList.isEmpty() &&
-                    app.config.character_asset != null && !app.config.character_asset.isEmpty()) {
-                // Scroll to recent selected model
-                AssetItem recentSelected = assetItemList.searchByRelPath(app.config.character_asset);
-                if (recentSelected != null)
-                    for (JFXListCell<AssetItem> cell : searchModelView.getItems())
-                        if (recentSelected.equals(cell.getItem())) {
-                            searchModelView.scrollTo(cell);
-                            searchModelView.getSelectionModel().select(cell);
+                    for (Node node : filterPaneTagFlow.getChildren())
+                        if (node instanceof JFXButton tag && t.equals(tag.getText())) {
+                            String styleFrom = change.getElementAdded() == null ? "info-tag-badge-active" : "info-tag-badge";
+                            String styleTo = change.getElementAdded() == null ? "info-tag-badge" : "info-tag-badge-active";
+                            GuiPrefabs.replaceStyleClass(tag, styleFrom, styleTo);
                         }
+                });
+                filterPaneTagFlow.getChildren().clear();
+                if (assetItemList != null && app.modelsDataset != null) {
+                    ArrayList<String> sortTags = new ArrayList<>(assetItemList.extract(AssetItem.PropertyExtractor.ASSET_ITEM_SORT_TAGS));
+                    sortTags.sort(Comparator.naturalOrder());
+                    sortTags.forEach(s -> {
+                        String t = app.modelsDataset.sortTags == null ? s : app.modelsDataset.sortTags.getOrDefault(s, s);
+                        JFXButton tag = new JFXButton(t);
+                        tag.getStyleClass().add("info-tag-badge");
+                        tag.setOnAction(ev -> {
+                            if (filterTagSet.contains(s))
+                                filterTagSet.remove(s);
+                            else
+                                filterTagSet.add(s);
+                            modelSearch(searchModelInput.getText());
+                        });
+                        filterPaneTagFlow.getChildren().add(tag);
+                    });
+                }
+                toggleFilterPane.getStyleClass().add("btn-noticeable");
+
+                // 3. Update model list:
+                modelSearch("");
+                searchModelInput.clear();
+                if (assetItemList != null && !modelCellList.isEmpty() &&
+                        app.config.character_asset != null && !app.config.character_asset.isEmpty()) {
+                    // Scroll to recent selected model and then select it.
+                    AssetItem recentSelected = assetItemList.searchByRelPath(app.config.character_asset);
+                    if (recentSelected != null)
+                        for (JFXListCell<AssetItem> cell : searchModelView.getItems())
+                            if (recentSelected.equals(cell.getItem())) {
+                                searchModelView.scrollTo(cell);
+                                searchModelView.getSelectionModel().select(cell);
+                            }
+                }
             }
-            toggleFilterPane.getStyleClass().add("btn-noticeable");
-            // Finish reload
+
+            // Post process:
             loadFailureTip.setVisible(modelCellList.isEmpty());
             app.rootModule.launchBtn.setDisable(modelCellList.isEmpty());
-            System.gc();
+            if (willGc)
+                System.gc();
             Logger.info("ModelManager", "Reloaded");
         });
     }

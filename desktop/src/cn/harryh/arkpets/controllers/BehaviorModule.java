@@ -203,7 +203,7 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
             }
         };
         ss.setDelay(new Duration(2000));
-        ss.setPeriod(new Duration(2000));
+        ss.setPeriod(new Duration(5000));
         ss.setRestartOnFailure(true);
         ss.start();
     }

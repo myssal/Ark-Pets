@@ -164,8 +164,9 @@ public final class RootModule implements Controller<ArkHomeFX> {
                 Future<ProcessPool.ProcessResult> future = ProcessPool.getInstance().submit(EmbeddedLauncher.class, List.of(), args);
                 // ArkPets core finalized.
                 if (!future.get().isSuccess()) {
-                    Logger.warn("Launcher", "Detected an abnormal finalization of an ArkPets thread (exit code -1). Please check the log file for details.");
-                    lastLaunchFailed = new ProcessPool.UnexpectedExitCodeException(-1);
+                    int exitCode = future.get().exitValue();
+                    Logger.warn("Launcher", "Detected an abnormal finalization of an ArkPets thread (exit code " + exitCode + "). Please check the log file for details.");
+                    lastLaunchFailed = new ProcessPool.UnexpectedExitCodeException(exitCode);
                     return false;
                 }
                 Logger.debug("Launcher", "Detected a successful finalization of an ArkPets thread.");
@@ -191,7 +192,7 @@ public final class RootModule implements Controller<ArkHomeFX> {
         popSplashScreen(e -> {
             Logger.info("Launcher", "User close request");
             GuiPrefabs.fadeOutWindow(app.stage, durationNormal, ev -> Platform.exit());
-        }, durationFast, Duration.ZERO);
+        }, durationFast, durationNormal);
     }
 
     @FXML
@@ -236,13 +237,17 @@ public final class RootModule implements Controller<ArkHomeFX> {
                 app.popLoading(ev -> {
                     try {
                         // Do launch ArkPets core.
-                        Thread.sleep(100);
                         startArkPetsCore();
                         Thread.sleep(1200);
                         // Show handbook in the first-run.
                         if (isNewcomer && !trayExitHandbook.hasShown()) {
                             Handbook b = trayExitHandbook;
-                            GuiPrefabs.DialogUtil.createCommonDialog(app.root, b.getIcon(), b.getTitle(), b.getHeader(), b.getContent(), null).show();
+                            GuiPrefabs.DialogUtil.createCommonDialog(app.root,
+                                    b.getIcon(),
+                                    b.getTitle(),
+                                    b.getHeader(),
+                                    b.getContent(),
+                                    null).show();
                             b.setShown();
                         }
                     } catch (InterruptedException ignored) {
@@ -291,7 +296,7 @@ public final class RootModule implements Controller<ArkHomeFX> {
                 return task;
             }
         };
-        ss.setDelay(new Duration(1000));
+        ss.setDelay(new Duration(2000));
         ss.setPeriod(new Duration(500));
         ss.setRestartOnFailure(true);
         ss.start();
