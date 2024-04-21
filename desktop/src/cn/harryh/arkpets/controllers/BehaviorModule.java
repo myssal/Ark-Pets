@@ -123,8 +123,8 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
         GuiComponents.SliderSetup<Integer> setupPhysicGravity = new GuiComponents.SimpleMultipleIntegerSliderSetup(configPhysicGravity, 10);
         setupPhysicGravity
                 .setDisplay(configPhysicGravityValue, "%d px/s²", "像素每平方秒 (pixel/s²)")
-                .setRange(0, 1000)
-                .setTicks(100, 10)
+                .setRange(0, 2000)
+                .setTicks(200, 10)
                 .setSliderValue(app.config.physic_gravity_acc)
                 .setOnChanged((observable, oldValue, newValue) -> {
                     app.config.physic_gravity_acc = setupPhysicGravity.getValidatedValue();
@@ -133,8 +133,8 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
         GuiComponents.SliderSetup<Integer> setupPhysicAirFriction = new GuiComponents.SimpleMultipleIntegerSliderSetup(configPhysicAirFriction, 10);
         setupPhysicAirFriction
                 .setDisplay(configPhysicAirFrictionValue, "%d px/s²", "像素每平方秒 (pixel/s²)")
-                .setRange(0, 1000)
-                .setTicks(100, 10)
+                .setRange(0, 2000)
+                .setTicks(200, 10)
                 .setSliderValue(app.config.physic_air_friction_acc)
                 .setOnChanged((observable, oldValue, newValue) -> {
                     app.config.physic_air_friction_acc = setupPhysicAirFriction.getValidatedValue();
@@ -143,8 +143,8 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
         GuiComponents.SliderSetup<Integer> setupPhysicStaticFriction = new GuiComponents.SimpleMultipleIntegerSliderSetup(configPhysicStaticFriction, 10);
         setupPhysicStaticFriction
                 .setDisplay(configPhysicStaticFrictionValue, "%d px/s²", "像素每平方秒 (pixel/s²)")
-                .setRange(0, 1000)
-                .setTicks(100, 10)
+                .setRange(0, 2000)
+                .setTicks(200, 10)
                 .setSliderValue(app.config.physic_static_friction_acc)
                 .setOnChanged((observable, oldValue, newValue) -> {
                     app.config.physic_static_friction_acc = setupPhysicStaticFriction.getValidatedValue();
@@ -153,8 +153,8 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
         GuiComponents.SliderSetup<Integer> setupPhysicSpeedLimitX = new GuiComponents.SimpleMultipleIntegerSliderSetup(configPhysicSpeedLimitX, 10);
         setupPhysicSpeedLimitX
                 .setDisplay(configPhysicSpeedLimitXValue, "%d px/s", "像素每秒 (pixel/s)")
-                .setRange(0, 1000)
-                .setTicks(100, 10)
+                .setRange(0, 2000)
+                .setTicks(200, 10)
                 .setSliderValue(app.config.physic_speed_limit_x)
                 .setOnChanged((observable, oldValue, newValue) -> {
                     app.config.physic_speed_limit_x = setupPhysicSpeedLimitX.getValidatedValue();
@@ -163,8 +163,8 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
         GuiComponents.SliderSetup<Integer> setupPhysicSpeedLimitY = new GuiComponents.SimpleMultipleIntegerSliderSetup(configPhysicSpeedLimitY, 10);
         setupPhysicSpeedLimitY
                 .setDisplay(configPhysicSpeedLimitYValue, "%d px/s", "像素每秒 (pixel/s)")
-                .setRange(0, 1000)
-                .setTicks(100, 10)
+                .setRange(0, 2000)
+                .setTicks(200, 10)
                 .setSliderValue(app.config.physic_speed_limit_y)
                 .setOnChanged((observable, oldValue, newValue) -> {
                     app.config.physic_speed_limit_y = setupPhysicSpeedLimitY.getValidatedValue();
@@ -202,7 +202,7 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
                 return task;
             }
         };
-        ss.setDelay(new Duration(2000));
+        ss.setDelay(new Duration(2500));
         ss.setPeriod(new Duration(5000));
         ss.setRestartOnFailure(true);
         ss.start();

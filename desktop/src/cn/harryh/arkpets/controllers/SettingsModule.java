@@ -60,16 +60,17 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
 
     private GuiComponents.NoticeBar appVersionNotice;
     private GuiComponents.NoticeBar diskFreeSpaceNotice;
+    private GuiComponents.NoticeBar fpsUnreachableNotice;
 
     private ArkHomeFX app;
 
     @Override
     public void initializeWith(ArkHomeFX app) {
         this.app = app;
+        initNoticeBox();
         initConfigDisplay();
         initConfigAdvanced();
         initAbout();
-        initNoticeBox();
         initScheduledListener();
     }
 
@@ -79,7 +80,9 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
                 new NamedItem<>("x1.0", 1f),
                 new NamedItem<>("x1.25", 1.25f),
                 new NamedItem<>("x1.5", 1.5f),
-                new NamedItem<>("x2.0", 2f))
+                new NamedItem<>("x2.0", 2f),
+                new NamedItem<>("x2.5", 2.5f),
+                new NamedItem<>("x3.0", 3.0f))
                 .selectValue(app.config.display_scale, "x" + app.config.display_scale + "（自定义）")
                 .setOnNonNullValueUpdated((observable, oldValue, newValue) -> {
                     app.config.display_scale = newValue.value();
@@ -88,11 +91,13 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
         new GuiComponents.ComboBoxSetup<>(configDisplayFps).setItems(new NamedItem<>("25", 25),
                 new NamedItem<>("30", 30),
                 new NamedItem<>("45", 45),
-                new NamedItem<>("60", 60))
+                new NamedItem<>("60", 60),
+                new NamedItem<>("120", 120))
                 .selectValue(app.config.display_fps, app.config.display_fps + "（自定义）")
                 .setOnNonNullValueUpdated((observable, oldValue, newValue) -> {
                     app.config.display_fps = newValue.value();
                     app.config.saveConfig();
+                    fpsUnreachableNotice.refresh();
                 });
         new GuiComponents.ComboBoxSetup<>(configCanvasSize).setItems(new NamedItem<>("最宽", 4),
                 new NamedItem<>("较宽", 8),
@@ -262,6 +267,30 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
             @Override
             protected String getText() {
                 return "当前磁盘存储空间不足，可能影响使用体验。";
+            }
+        };
+        fpsUnreachableNotice = new GuiComponents.NoticeBar(noticeBox) {
+            @Override
+            protected boolean isToActivate() {
+                for (ArkConfig.Monitor i : ArkConfig.Monitor.getMonitors())
+                    if (i.hz >= configDisplayFps.getValue().value())
+                        return false;
+                return true;
+            }
+
+            @Override
+            protected String getColorString() {
+                return GuiPrefabs.Colors.COLOR_WARNING;
+            }
+
+            @Override
+            protected String getIconSVGPath() {
+                return GuiPrefabs.Icons.ICON_WARNING_ALT;
+            }
+
+            @Override
+            protected String getText() {
+                return "当前设置的帧率超过了当前显示器的刷新率。";
             }
         };
     }

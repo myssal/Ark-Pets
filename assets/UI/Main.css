@@ -24,6 +24,7 @@
     -fx-effect: dropshadow(gaussian, derive(black, 90%), 10, 0.1, 0, 0.5);
 }
 
+/* Color constants */
 .root {
     -text-normal: #242424;
     -theme-color: #2A528C;
@@ -372,6 +373,11 @@ JFXSlider {
 .config-field JFXComboBox {
     -fx-font-size: 12px;
     -fx-text-fill: -text-normal;
+}
+
+.config-field JFXComboBox .list-cell {
+    -fx-cursor: hand;
+    -fx-padding: 4px 8px 4px 8px;
 }
 
 .config-field JFXCheckBox,
