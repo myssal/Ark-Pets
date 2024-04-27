@@ -6,15 +6,20 @@ package cn.harryh.arkpets.controllers;
 import cn.harryh.arkpets.ArkConfig;
 import cn.harryh.arkpets.ArkHomeFX;
 import cn.harryh.arkpets.utils.GuiComponents;
+import cn.harryh.arkpets.utils.GuiPrefabs;
 import cn.harryh.arkpets.utils.Logger;
 import com.jfoenix.controls.*;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.util.Duration;
+
+import static cn.harryh.arkpets.Const.durationFast;
 
 
 public final class BehaviorModule implements Controller<ArkHomeFX> {
@@ -38,6 +43,12 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
     private JFXSlider configDeployMarginBottom;
     @FXML
     private Label configDeployMarginBottomValue;
+    @FXML
+    private JFXButton toggleConfigDeployPosition;
+    @FXML
+    public HBox wrapperConfigDeployPosition;
+    @FXML
+    private Canvas configDeployPosition;
     @FXML
     private JFXSlider configPhysicGravity;
     @FXML
@@ -120,6 +131,24 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
                     app.config.display_margin_bottom = setupDeployMarginBottom.getValidatedValue();
                     app.config.saveConfig();
                 });
+
+        toggleConfigDeployPosition.setOnAction(e -> {
+            if (wrapperConfigDeployPosition.isVisible())
+                GuiPrefabs.fadeOutNode(wrapperConfigDeployPosition, durationFast, null);
+            else
+                GuiPrefabs.fadeInNode(wrapperConfigDeployPosition, durationFast, null);
+        });
+        GuiComponents.DotPickerSetup setupDeployPosition = new GuiComponents.DotPickerSetup(configDeployPosition);
+        setupDeployPosition.setRelXY(app.config.initial_relative_position[0], app.config.initial_relative_position[1]);
+        setupDeployPosition.setOnDotPicked(e -> {
+            float x = (float)setupDeployPosition.getRelX();
+            float y = (float)setupDeployPosition.getRelY();
+            Logger.debug("Config", "Specified deploy position to " + x + ", " + y);
+            app.config.initial_relative_position[0] = x;
+            app.config.initial_relative_position[1] = y;
+            app.config.saveConfig();
+        });
+
         GuiComponents.SliderSetup<Integer> setupPhysicGravity = new GuiComponents.SimpleMultipleIntegerSliderSetup(configPhysicGravity, 10);
         setupPhysicGravity
                 .setDisplay(configPhysicGravityValue, "%d px/s²", "像素每平方秒 (pixel/s²)")

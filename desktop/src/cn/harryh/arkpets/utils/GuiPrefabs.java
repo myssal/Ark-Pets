@@ -8,10 +8,7 @@ import cn.harryh.arkpets.concurrent.ProcessPool;
 import cn.harryh.arkpets.guitasks.GuiTask;
 import cn.harryh.arkpets.guitasks.ZipTask;
 import com.jfoenix.controls.*;
-import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -67,6 +64,7 @@ public class GuiPrefabs {
     public static void fadeInNode(Node node, Duration duration, EventHandler<ActionEvent> onFinished) {
         FadeTransition fadeT = new FadeTransition(duration, node);
         node.setVisible(true);
+        node.setManaged(true);
         if (onFinished != null)
             fadeT.setOnFinished(onFinished);
         fadeT.setFromValue(0);
@@ -78,6 +76,7 @@ public class GuiPrefabs {
         FadeTransition fadeT = new FadeTransition(duration, node);
         fadeT.setOnFinished(e -> {
             node.setVisible(false);
+            node.setManaged(false);
             if (onFinished != null)
                 onFinished.handle(e);
         });

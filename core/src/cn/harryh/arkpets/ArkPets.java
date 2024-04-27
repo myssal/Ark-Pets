@@ -85,7 +85,8 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 		plane.setObjSize(WD_W, WD_H);
 		plane.setSpeedLimit(config.physic_speed_limit_x, config.physic_speed_limit_y);
 		ArkConfig.Monitor primaryMonitor = ArkConfig.Monitor.getMonitors()[0];
-		initWindow((int)(primaryMonitor.size[0] * 0.1f), (int)(primaryMonitor.size[0] * 0.1f));
+		initWindow((int)(primaryMonitor.size[0] * config.initial_relative_position[0] - (WD_SCALE * cha.camera.getWidth()) / 2),
+				(int)(primaryMonitor.size[1] * config.initial_relative_position[1]));
 		// 5.Tray icon setup
 		tray = new MemberTrayImpl(this, new SocketClient());
 		// Setup complete

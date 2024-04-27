@@ -58,6 +58,7 @@ public class ArkConfig {
     public int        display_margin_bottom;
     public boolean    display_multi_monitors;
     public float      display_scale;
+    public float[]    initial_relative_position;
     public boolean    launcher_solid_exit;
     public String     logging_level;
     public float      physic_gravity_acc;
@@ -97,10 +98,12 @@ public class ArkConfig {
         }
         // Read and parse the custom config file.
         try {
-            return Objects.requireNonNull(
+            ArkConfig ac = Objects.requireNonNull(
                     JSONObject.parseObject(IOUtils.FileUtil.readString(configCustom, charsetDefault), ArkConfig.class),
                     "JSON parsing returns null."
             );
+            ac.fix();
+            return ac;
         } catch (IOException e) {
             Logger.error("Config", "Config reading failed, details see below.", e);
         } catch (NullPointerException e) {
@@ -133,6 +136,14 @@ public class ArkConfig {
                 physic_static_friction_acc == 0 &&
                 physic_speed_limit_x == 0 &&
                 physic_speed_limit_y == 0;
+    }
+
+    private void fix() {
+        if (initial_relative_position == null
+                || initial_relative_position.length != 2
+                || initial_relative_position[0] < 0
+                || initial_relative_position[1] < 0)
+            initial_relative_position = defaultConfig.initial_relative_position;
     }
 
 

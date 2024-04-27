@@ -7,8 +7,11 @@
 
 <!-- ********* Wrapper 2 ********* -->
 <?import com.jfoenix.controls.*?>
+<?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
 <Pane prefHeight="376.0" prefWidth="460.0" styleClass="wrapper" stylesheets="@Main.css"
       xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="cn.harryh.arkpets.controllers.BehaviorModule">
@@ -43,6 +46,27 @@
                     <Label text="任务栏高度（下边界距离）"/>
                     <JFXSlider fx:id="configDeployMarginBottom"/>
                     <Label fx:id="configDeployMarginBottomValue" text="0"/>
+                </HBox>
+                <HBox>
+                    <Label text="初始部署位置"/>
+                    <JFXButton fx:id="toggleConfigDeployPosition" minHeight="-Infinity" minWidth="-Infinity"
+                               mnemonicParsing="false" prefHeight="28.0" prefWidth="60.0" text="配置">
+                        <graphic>
+                            <AnchorPane prefHeight="25.0" prefWidth="16.0" scaleX="0.0" styleClass="btn-icon">
+                                <SVGPath
+                                        content="m12 1c-3.148 0-6 2.553-6 5.702 0 3.148 2.602 6.907 6 12.298 3.398-5.391 6-9.15 6-12.298 0-3.149-2.851-5.702-6-5.702zm0 8c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2zm12 14h-24l4-8h3.135c.385.641.798 1.309 1.232 2h-3.131l-2 4h17.527l-2-4h-3.131c.435-.691.848-1.359 1.232-2h3.136l4 8z"
+                                        scaleX="1.2" scaleY="1.2" AnchorPane.leftAnchor="-9.0"/>
+                            </AnchorPane>
+                        </graphic>
+                        <styleClass>
+                            <String fx:value="btn-secondary"/>
+                            <String fx:value="btn-with-icon"/>
+                        </styleClass>
+                    </JFXButton>
+                </HBox>
+                <HBox fx:id="wrapperConfigDeployPosition" managed="false" visible="false">
+                    <Label styleClass="config-help-text" text="在矩形区域内单击以选定桌宠生成时在屏幕中的初始位置"/>
+                    <Canvas fx:id="configDeployPosition" height="150.0" width="150.0"/>
                 </HBox>
                 <Separator/>
                 <Label styleClass="config-group-title" text="物理"/>

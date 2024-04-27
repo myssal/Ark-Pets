@@ -410,6 +410,12 @@ JFXSlider {
     -fx-opacity: 0.382;
 }
 
+.config-help-text {
+    -fx-font-size: 12px;
+    -fx-text-fill: dimgray;
+    -fx-wrap-text: true;
+}
+
 .config-hyper-link {
     -fx-text-fill: -theme-color;
     -fx-alignment: top-center;

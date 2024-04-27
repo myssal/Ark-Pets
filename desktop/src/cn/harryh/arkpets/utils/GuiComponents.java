@@ -8,9 +8,13 @@ import javafx.animation.ScaleTransition;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.DoublePropertyBase;
 import javafx.beans.value.ChangeListener;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -144,6 +148,119 @@ public class GuiComponents {
                     listener.changed(observable, oldValue, newValue);
             });
             return this;
+        }
+    }
+
+
+    /** A useful tool to transform a {@link Canvas} into a dot picker control
+     * that allows user to pick a dot on a 2D plane.
+     * Note that the dot's x and y property ranges from {@code 0} (left/top) to {@code 1} (right/bottom),
+     * which is called "the relative position".
+     */
+    public static class DotPickerSetup {
+        public static final Color themeColor = Color.valueOf(GuiPrefabs.Colors.COLOR_INFO);
+        public static final Color alarmColor = Color.valueOf(GuiPrefabs.Colors.COLOR_WARNING);
+        public static final double metaLengthFactor = 0.025;
+        public static final double referLineThreshold = 0.025;
+
+        public final Canvas canvas;
+        public final GraphicsContext gc;
+
+        protected EventHandler<ActionEvent> listener;
+        protected boolean picked = false;
+        protected boolean pending = false;
+        protected double pickedRelX = 0;
+        protected double pickedRelY = 0;
+        protected double pendingRelX = 0;
+        protected double pendingRelY = 0;
+
+        public DotPickerSetup(Canvas canvas) {
+            this.canvas = canvas;
+            this.gc = canvas.getGraphicsContext2D();
+            canvas.setCursor(Cursor.CROSSHAIR);
+            canvas.setOnMouseClicked(e -> {
+                setRelXY(e.getX() / canvas.getWidth(), e.getY() / canvas.getHeight());
+                if (listener != null)
+                    listener.handle(new ActionEvent(this, canvas));
+            });
+            canvas.setOnMouseDragged(e -> setPendingRelXY(e.getX() / canvas.getWidth(), e.getY() / canvas.getHeight()));
+            canvas.setOnMouseMoved(e -> setPendingRelXY(e.getX() / canvas.getWidth(), e.getY() / canvas.getHeight()));
+            canvas.setOnMouseExited(e -> {
+                pending = false;
+                repaint();
+            });
+        }
+
+        public final double getRelX() {
+            return pickedRelX;
+        }
+
+        public final double getRelY() {
+            return pickedRelY;
+        }
+
+        public final void setOnDotPicked(EventHandler<ActionEvent> listener) {
+            this.listener = listener;
+        }
+
+        public final void setRelXY(double x, double y) {
+            picked = true;
+            pickedRelX = x;
+            pickedRelY = y;
+            repaint();
+        }
+
+        protected final void setPendingRelXY(double x, double y) {
+            pending = true;
+            pendingRelX = x;
+            pendingRelY = y;
+            repaint();
+        }
+
+        protected void repaint() {
+            double maxSide = Math.max(canvas.getWidth(), canvas.getHeight());
+            double lineSize = maxSide * metaLengthFactor / 2;
+            double dotSize = maxSide * metaLengthFactor * 2;
+            gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            // Rectangle
+            gc.setFill(Color.WHITE);
+            gc.fillRoundRect(lineSize / 2, lineSize / 2,
+                    canvas.getWidth() - lineSize, canvas.getHeight() - lineSize, dotSize, dotSize);
+            gc.setLineWidth(lineSize);
+            gc.setStroke(themeColor.deriveColor(0, 1, 1, 0.7));
+            gc.strokeRoundRect(lineSize / 2, lineSize / 2,
+                    canvas.getWidth() - lineSize, canvas.getHeight() - lineSize, dotSize, dotSize);
+            // Reference lines
+            if (picked) {
+                pickedRelX = Math.abs(pickedRelX - 0.5) <= referLineThreshold ? 0.5 : pickedRelX;
+                pickedRelY = Math.abs(pickedRelY - 0.5) <= referLineThreshold ? 0.5 : pickedRelY;
+            }
+            if (pending) {
+                gc.setFill(alarmColor.deriveColor(0, 1, 1, 0.5));
+                if (Math.abs(pendingRelX - 0.5) <= referLineThreshold) {
+                    pendingRelX = 0.5;
+                    gc.fillRect(canvas.getWidth() / 2 - lineSize / 2, lineSize,
+                            lineSize, canvas.getHeight() - lineSize * 2);
+                }
+                if (Math.abs(pendingRelY - 0.5) <= referLineThreshold) {
+                    pendingRelY = 0.5;
+                    gc.fillRect(lineSize, canvas.getHeight() / 2 - lineSize / 2,
+                            canvas.getWidth() - lineSize * 2, lineSize);
+                }
+            }
+            // Dots
+            if (picked) {
+                gc.setFill(themeColor);
+                gc.fillRoundRect(pickedRelX * canvas.getWidth() - dotSize / 2,
+                        pickedRelY * canvas.getHeight() - dotSize / 2,
+                        dotSize, dotSize, dotSize, dotSize);
+            }
+            if (pending) {
+                gc.setFill(themeColor.deriveColor(0, 1, 1, 0.3));
+                gc.fillRoundRect(pendingRelX * canvas.getWidth() - dotSize / 2,
+                        pendingRelY * canvas.getHeight() - dotSize / 2,
+                        dotSize, dotSize, dotSize, dotSize);
+            }
         }
     }
 

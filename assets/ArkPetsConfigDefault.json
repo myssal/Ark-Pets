@@ -6,14 +6,13 @@
     "behavior_do_peer_repulsion":true,
     "canvas_fitting_samples":16,
     "character_asset":"",
-    "character_files":{
-
-    },
+    "character_files":{},
     "character_label":"",
     "display_fps":30,
     "display_margin_bottom":0,
     "display_multi_monitors":true,
     "display_scale":1.0,
+    "initial_relative_position":[0.2,0.2],
     "launcher_solid_exit":true,
     "logging_level":"INFO",
     "physic_air_friction_acc":100.0,
