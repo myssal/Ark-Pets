@@ -86,7 +86,7 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
                 .selectValue(app.config.display_scale, "x" + app.config.display_scale + "（自定义）")
                 .setOnNonNullValueUpdated((observable, oldValue, newValue) -> {
                     app.config.display_scale = newValue.value();
-                    app.config.saveConfig();
+                    app.config.save();
                 });
         new GuiComponents.ComboBoxSetup<>(configDisplayFps).setItems(new NamedItem<>("25", 25),
                 new NamedItem<>("30", 30),
@@ -96,7 +96,7 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
                 .selectValue(app.config.display_fps, app.config.display_fps + "（自定义）")
                 .setOnNonNullValueUpdated((observable, oldValue, newValue) -> {
                     app.config.display_fps = newValue.value();
-                    app.config.saveConfig();
+                    app.config.save();
                     fpsUnreachableNotice.refresh();
                 });
         new GuiComponents.ComboBoxSetup<>(configCanvasSize).setItems(new NamedItem<>("最宽", 4),
@@ -107,7 +107,7 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
                 .selectValue(app.config.canvas_fitting_samples, "每" + app.config.canvas_fitting_samples + "帧采样（自定义）")
                 .setOnNonNullValueUpdated((observable, oldValue, newValue) -> {
                     app.config.canvas_fitting_samples = newValue.value();
-                    app.config.saveConfig();
+                    app.config.save();
                 });
     }
 
@@ -117,7 +117,7 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
             if (configLoggingLevel.getValue() != null) {
                 Logger.setLevel(Level.toLevel(configLoggingLevel.getValue(), Level.INFO));
                 app.config.logging_level = Logger.getLevel().toString();
-                app.config.saveConfig();
+                app.config.save();
             }
         });
         String level = app.config.logging_level;
@@ -206,7 +206,7 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
         configSolidExit.setSelected(app.config.launcher_solid_exit);
         configSolidExit.setOnAction(e -> {
             app.config.launcher_solid_exit = configSolidExit.isSelected();
-            app.config.saveConfig();
+            app.config.save();
         });
     }
 

@@ -103,7 +103,7 @@ public final class RootModule implements Controller<ArkHomeFX> {
         // Load config file.
         app.config = Objects.requireNonNull(ArkConfig.getConfig(), "ArkConfig returns a null instance, please check the config file.");
         isNewcomer = app.config.isNewcomer();
-        app.config.saveConfig();
+        app.config.save();
     }
 
     /** Pops up the splash screen in the GUI.
@@ -232,7 +232,7 @@ public final class RootModule implements Controller<ArkHomeFX> {
         launchBtn.setOnAction(e -> {
             // When request to launch ArkPets:
             launchBtn.setDisable(true);
-            app.config.saveConfig();
+            app.config.save();
             if (app.config.character_asset != null && !app.config.character_asset.isEmpty()) {
                 app.popLoading(ev -> {
                     try {

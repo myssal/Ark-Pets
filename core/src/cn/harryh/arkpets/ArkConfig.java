@@ -3,7 +3,7 @@
  */
 package cn.harryh.arkpets;
 
-import cn.harryh.arkpets.utils.IOUtils;
+import cn.harryh.arkpets.utils.IOUtils.FileUtil;
 import cn.harryh.arkpets.utils.Logger;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -12,138 +12,138 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
 
 import static cn.harryh.arkpets.Const.*;
 
 
-public class ArkConfig {
-    public static final String configCustomPath = configExternal;
-    public static final String configDefaultPath = configInternal;
+public class ArkConfig implements Serializable {
     public static final ArkConfig defaultConfig;
-    private static final File configCustom = new File(configCustomPath);
+    private static final URL configDefault = Objects.requireNonNull(ArkConfig.class.getResource(Const.configInternal));
+    private static final File configCustom = new File(Const.configExternal);
     private static boolean isNewcomer = false;
 
     static {
         ArkConfig defaultConfig_ = null;
         try {
-            defaultConfig_ = JSONObject.parseObject(
-                    IOUtils.FileUtil.readString(getDefaultConfigInputStream(), charsetDefault),
-                    ArkConfig.class
-            );
-        } catch (IOException e) {
+            defaultConfig_ = JSONObject.parseObject(Objects.requireNonNull(configDefault).openStream(), ArkConfig.class);
+        } catch (IOException | NullPointerException e) {
             Logger.error("Config", "Default config parsing failed, details see below.", e);
         }
         defaultConfig = defaultConfig_;
     }
 
-    // The following is the config items
-    public int        behavior_ai_activation;
-    public boolean    behavior_allow_interact;
-    public boolean    behavior_allow_sit;
-    public boolean    behavior_allow_walk;
-    public boolean    behavior_do_peer_repulsion;
-    public int        canvas_fitting_samples;
-    public String     character_asset;
-    public JSONObject character_files;
-    public String     character_label;
-    public int        display_fps;
-    public int        display_margin_bottom;
-    public boolean    display_multi_monitors;
-    public float      display_scale;
-    public float[]    initial_relative_position;
-    public boolean    launcher_solid_exit;
-    public String     logging_level;
-    public float      physic_gravity_acc;
-    public float      physic_air_friction_acc;
-    public float      physic_static_friction_acc;
-    public float      physic_speed_limit_x;
-    public float      physic_speed_limit_y;
+
+    // Config items and default values:
+    /** @since ArkPets 1.0 */ @JSONField(defaultValue = "8")
+    public int          behavior_ai_activation;
+    /** @since ArkPets 1.0 */ @JSONField(defaultValue = "true")
+    public boolean      behavior_allow_interact;
+    /** @since ArkPets 1.0 */ @JSONField(defaultValue = "true")
+    public boolean      behavior_allow_sit;
+    /** @since ArkPets 1.0 */ @JSONField(defaultValue = "true")
+    public boolean      behavior_allow_walk;
+    /** @since ArkPets 1.6 */ @JSONField(defaultValue = "true")
+    public boolean      behavior_do_peer_repulsion;
+    /** @since ArkPets 3.1 */ @JSONField(defaultValue = "16")
+    public int          canvas_fitting_samples;
+    /** @since ArkPets 2.0 */ @JSONField()
+    public String       character_asset;
+    /** @since ArkPets 2.2 */ @JSONField()
+    public JSONObject   character_files;
+    /** @since ArkPets 2.0 */ @JSONField()
+    public String       character_label;
+    /** @since ArkPets 1.0 */ @JSONField(defaultValue = "30")
+    public int          display_fps;
+    /** @since ArkPets 1.0 */ @JSONField(defaultValue = "0")
+    public int          display_margin_bottom;
+    /** @since ArkPets 2.1 */ @JSONField(defaultValue = "true")
+    public boolean      display_multi_monitors;
+    /** @since ArkPets 1.0 */ @JSONField(defaultValue = "1.0")
+    public float        display_scale;
+    /** @since ArkPets 3.2 */ @JSONField(defaultValue = "0.2")
+    public float        initial_position_x;
+    /** @since ArkPets 3.2 */ @JSONField(defaultValue = "0.2")
+    public float        initial_position_y;
+    /** @since ArkPets 3.0 */ @JSONField(defaultValue = "true")
+    public boolean      launcher_solid_exit;
+    /** @since ArkPets 2.0 */ @JSONField(defaultValue = "INFO")
+    public String       logging_level;
+    /** @since ArkPets 2.2 */ @JSONField(defaultValue = "800.0")
+    public float        physic_gravity_acc;
+    /** @since ArkPets 2.2 */ @JSONField(defaultValue = "100.0")
+    public float        physic_air_friction_acc;
+    /** @since ArkPets 2.2 */ @JSONField(defaultValue = "500.0")
+    public float        physic_static_friction_acc;
+    /** @since ArkPets 2.2 */ @JSONField(defaultValue = "1000.0")
+    public float        physic_speed_limit_x;
+    /** @since ArkPets 2.2 */ @JSONField(defaultValue = "1000.0")
+    public float        physic_speed_limit_y;
 
     private ArkConfig() {
     }
 
-    /** Saves the config into the custom file.
+    /** Saves the custom config to the external config file.
      */
     @JSONField(serialize = false)
-    public void saveConfig() {
+    public void save() {
         try {
-            IOUtils.FileUtil.writeString(configCustom, charsetDefault, JSON.toJSONString(this, true), false);
+            FileUtil.writeString(configCustom, charsetDefault, JSON.toJSONString(this, true), false);
+            Logger.debug("Config", "Config saved");
         } catch (IOException e) {
             Logger.error("Config", "Config saving failed, details see below.", e);
         }
     }
 
-    /** Instantiates an ArkConfig object.
-     * @return ArkConfig object. null if failed.
-     */
-    @JSONField(serialize = false)
-    public static ArkConfig getConfig() {
-        // Duplicate the default config file if the custom config file is not existed.
-        try {
-            if (!configCustom.isFile()) {
-                Files.copy(getDefaultConfigInputStream(), configCustom.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                isNewcomer = true;
-                Logger.info("Config", "Default config was copied successfully.");
-            }
-        } catch (IOException e) {
-            Logger.error("Config", "Default config copying failed, details see below.", e);
-        }
-        // Read and parse the custom config file.
-        try {
-            ArkConfig ac = Objects.requireNonNull(
-                    JSONObject.parseObject(IOUtils.FileUtil.readString(configCustom, charsetDefault), ArkConfig.class),
-                    "JSON parsing returns null."
-            );
-            ac.fix();
-            return ac;
-        } catch (IOException e) {
-            Logger.error("Config", "Config reading failed, details see below.", e);
-        } catch (NullPointerException e) {
-            Logger.error("Config", "Config parsing failed, details see below.", e);
-        }
-        return null;
-    }
-
-    private static InputStream getDefaultConfigInputStream() {
-        return Objects.requireNonNull(ArkConfig.class.getResourceAsStream(configDefaultPath));
-    }
-
-    /** Returns true if the config file was newly-generated.
+    /** Returns true if the external config file was newly-generated.
      */
     @JSONField(serialize = false)
     public boolean isNewcomer() {
         return isNewcomer;
     }
 
-    /** Returns true if all the physic params are set to 0.
-     * <hr>
-     * Note: Once users upgraded ArkPets to v2.2+ where physic params can be modified manually,
-     * the physic params will be initialized to 0, which will cause bad behaviors.
-     * @since ArkPets 2.2
+    /** Gets the custom ArkConfig object by reading the external config file.
+     * If the external config file does not exist, a default config file will be generated.
+     * @return An ArkConfig object. {@code null} if failed.
      */
-    @JSONField(serialize = false)
-    public boolean isAllPhysicConfigZeroed() {
-        return physic_gravity_acc == 0 &&
-                physic_air_friction_acc == 0 &&
-                physic_static_friction_acc == 0 &&
-                physic_speed_limit_x == 0 &&
-                physic_speed_limit_y == 0;
+    public static ArkConfig getConfig() {
+        if (!configCustom.exists()) {
+            // Use the default config if the external config file does not exist.
+            isNewcomer = true;
+            ArkConfig config = getDefaultConfig();
+            if (config != null)
+                config.save();
+            return getDefaultConfig();
+        } else {
+            // Read and parse the external config file.
+            try {
+                return Objects.requireNonNull(
+                        JSONObject.parseObject(FileUtil.readString(configCustom, charsetDefault), ArkConfig.class),
+                        "JSON parsing returns null."
+                );
+            } catch (IOException | NullPointerException e) {
+                Logger.error("Config", "Failed to get the custom config, details see below.", e);
+            }
+            return null;
+        }
     }
 
-    private void fix() {
-        if (initial_relative_position == null
-                || initial_relative_position.length != 2
-                || initial_relative_position[0] < 0
-                || initial_relative_position[1] < 0)
-            initial_relative_position = defaultConfig.initial_relative_position;
+    /** Gets the default ArkConfig object by reading the internal config file.
+     * @return An ArkConfig object. {@code null} if failed.
+     */
+    public static ArkConfig getDefaultConfig() {
+        try (InputStream inputStream = configDefault.openStream()) {
+            return Objects.requireNonNull(
+                    JSONObject.parseObject(new String(inputStream.readAllBytes(), charsetDefault), ArkConfig.class),
+                    "JSON parsing returns null."
+            );
+        } catch (IOException e) {
+            Logger.error("Config", "Failed to get the default config, details see below.", e);
+        }
+        return null;
     }
 
 
@@ -171,7 +171,7 @@ public class ArkConfig {
                 String script = generateScript();
                 if (script == null || startupDir == null)
                     throw new IOException("Generate script failed.");
-                IOUtils.FileUtil.writeString(startupFile, charsetVBS, script, false);
+                FileUtil.writeString(startupFile, charsetVBS, script, false);
                 Logger.info("Config", "Auto-startup was added: " + startupFile.getAbsolutePath());
                 return true;
             } catch (Exception e) {
@@ -182,7 +182,7 @@ public class ArkConfig {
 
         public static void removeStartup() {
             try {
-                IOUtils.FileUtil.delete(startupFile.toPath(), false);
+                FileUtil.delete(startupFile.toPath(), false);
                 Logger.info("Config", "Auto-startup was removed: " + startupFile.getAbsolutePath());
             } catch (Exception e) {
                 Logger.error("Config", "Auto-startup removing failed, details see below.", e);
@@ -196,8 +196,8 @@ public class ArkConfig {
                 String script = generateScript();
                 if (script == null || startupDir == null)
                     throw new IOException("Generate script failed.");
-                String checksum1 = IOUtils.FileUtil.getMD5(Objects.requireNonNull(script).getBytes(charsetVBS));
-                String checksum2 = IOUtils.FileUtil.getMD5(startupFile);
+                String checksum1 = FileUtil.getMD5(Objects.requireNonNull(script).getBytes(charsetVBS));
+                String checksum2 = FileUtil.getMD5(startupFile);
                 return checksum1.equals(checksum2);
             } catch (Exception e) {
                 return false;

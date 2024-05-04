@@ -85,12 +85,12 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
         configBehaviorAllowWalk.setSelected(app.config.behavior_allow_walk);
         configBehaviorAllowWalk.setOnAction(e -> {
             app.config.behavior_allow_walk = configBehaviorAllowWalk.isSelected();
-            app.config.saveConfig();
+            app.config.save();
         });
         configBehaviorAllowSit.setSelected(app.config.behavior_allow_sit);
         configBehaviorAllowSit.setOnAction(e -> {
             app.config.behavior_allow_sit = configBehaviorAllowSit.isSelected();
-            app.config.saveConfig();
+            app.config.save();
         });
 
         GuiComponents.SliderSetup<Integer> setupBehaviorAiActivation = new GuiComponents.SimpleIntegerSliderSetup(configBehaviorAiActivation);
@@ -101,24 +101,24 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
                 .setSliderValue(app.config.behavior_ai_activation)
                 .setOnChanged((observable, oldValue, newValue) -> {
                     app.config.behavior_ai_activation = setupBehaviorAiActivation.getValidatedValue();
-                    app.config.saveConfig();
+                    app.config.save();
                 });
 
         configBehaviorAllowInteract.setSelected(app.config.behavior_allow_interact);
         configBehaviorAllowInteract.setOnAction(e -> {
             app.config.behavior_allow_interact = configBehaviorAllowInteract.isSelected();
-            app.config.saveConfig();
+            app.config.save();
         });
         configBehaviorDoPeerRepulsion.setSelected(app.config.behavior_do_peer_repulsion);
         configBehaviorDoPeerRepulsion.setOnAction(e -> {
             app.config.behavior_do_peer_repulsion = configBehaviorDoPeerRepulsion.isSelected();
-            app.config.saveConfig();
+            app.config.save();
         });
 
         configDeployMultiMonitors.setSelected(app.config.display_multi_monitors);
         configDeployMultiMonitors.setOnAction(e -> {
             app.config.display_multi_monitors = configDeployMultiMonitors.isSelected();
-            app.config.saveConfig();
+            app.config.save();
         });
 
         GuiComponents.SliderSetup<Integer> setupDeployMarginBottom = new GuiComponents.SimpleIntegerSliderSetup(configDeployMarginBottom);
@@ -129,7 +129,7 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
                 .setSliderValue(app.config.display_margin_bottom)
                 .setOnChanged((observable, oldValue, newValue) -> {
                     app.config.display_margin_bottom = setupDeployMarginBottom.getValidatedValue();
-                    app.config.saveConfig();
+                    app.config.save();
                 });
 
         toggleConfigDeployPosition.setOnAction(e -> {
@@ -139,14 +139,14 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
                 GuiPrefabs.fadeInNode(wrapperConfigDeployPosition, durationFast, null);
         });
         GuiComponents.DotPickerSetup setupDeployPosition = new GuiComponents.DotPickerSetup(configDeployPosition);
-        setupDeployPosition.setRelXY(app.config.initial_relative_position[0], app.config.initial_relative_position[1]);
+        setupDeployPosition.setRelXY(app.config.initial_position_x, app.config.initial_position_y);
         setupDeployPosition.setOnDotPicked(e -> {
             float x = (float)setupDeployPosition.getRelX();
             float y = (float)setupDeployPosition.getRelY();
             Logger.debug("Config", "Specified deploy position to " + x + ", " + y);
-            app.config.initial_relative_position[0] = x;
-            app.config.initial_relative_position[1] = y;
-            app.config.saveConfig();
+            app.config.initial_position_x = x;
+            app.config.initial_position_y = y;
+            app.config.save();
         });
 
         GuiComponents.SliderSetup<Integer> setupPhysicGravity = new GuiComponents.SimpleMultipleIntegerSliderSetup(configPhysicGravity, 10);
@@ -157,7 +157,7 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
                 .setSliderValue(app.config.physic_gravity_acc)
                 .setOnChanged((observable, oldValue, newValue) -> {
                     app.config.physic_gravity_acc = setupPhysicGravity.getValidatedValue();
-                    app.config.saveConfig();
+                    app.config.save();
                 });
         GuiComponents.SliderSetup<Integer> setupPhysicAirFriction = new GuiComponents.SimpleMultipleIntegerSliderSetup(configPhysicAirFriction, 10);
         setupPhysicAirFriction
@@ -167,7 +167,7 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
                 .setSliderValue(app.config.physic_air_friction_acc)
                 .setOnChanged((observable, oldValue, newValue) -> {
                     app.config.physic_air_friction_acc = setupPhysicAirFriction.getValidatedValue();
-                    app.config.saveConfig();
+                    app.config.save();
                 });
         GuiComponents.SliderSetup<Integer> setupPhysicStaticFriction = new GuiComponents.SimpleMultipleIntegerSliderSetup(configPhysicStaticFriction, 10);
         setupPhysicStaticFriction
@@ -177,7 +177,7 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
                 .setSliderValue(app.config.physic_static_friction_acc)
                 .setOnChanged((observable, oldValue, newValue) -> {
                     app.config.physic_static_friction_acc = setupPhysicStaticFriction.getValidatedValue();
-                    app.config.saveConfig();
+                    app.config.save();
                 });
         GuiComponents.SliderSetup<Integer> setupPhysicSpeedLimitX = new GuiComponents.SimpleMultipleIntegerSliderSetup(configPhysicSpeedLimitX, 10);
         setupPhysicSpeedLimitX
@@ -187,7 +187,7 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
                 .setSliderValue(app.config.physic_speed_limit_x)
                 .setOnChanged((observable, oldValue, newValue) -> {
                     app.config.physic_speed_limit_x = setupPhysicSpeedLimitX.getValidatedValue();
-                    app.config.saveConfig();
+                    app.config.save();
                 });
         GuiComponents.SliderSetup<Integer> setupPhysicSpeedLimitY = new GuiComponents.SimpleMultipleIntegerSliderSetup(configPhysicSpeedLimitY, 10);
         setupPhysicSpeedLimitY
@@ -197,7 +197,7 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
                 .setSliderValue(app.config.physic_speed_limit_y)
                 .setOnChanged((observable, oldValue, newValue) -> {
                     app.config.physic_speed_limit_y = setupPhysicSpeedLimitY.getValidatedValue();
-                    app.config.saveConfig();
+                    app.config.save();
                 });
         EventHandler<MouseEvent> configPhysicRestoreEvent = e -> {
             ArkConfig defaults = ArkConfig.defaultConfig;
@@ -212,8 +212,6 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
             configPhysicRestoreEvent.handle(e);
             app.rootModule.moduleWrapperComposer.activate(1);
         });
-        if (app.config.isAllPhysicConfigZeroed())
-            configPhysicRestoreEvent.handle(null);
     }
 
     private void initScheduledListener() {
