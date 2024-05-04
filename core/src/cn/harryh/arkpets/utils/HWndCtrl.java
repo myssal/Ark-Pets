@@ -12,6 +12,8 @@ import com.sun.jna.platform.win32.WinDef.RECT;
 import com.sun.jna.platform.win32.WinUser;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class HWndCtrl {
@@ -287,5 +289,50 @@ public class HWndCtrl {
     @Override
     public String toString() {
         return "‘" + windowText + "’ " + windowWidth + "*" + windowHeight + " style=" + getWindowExStyle();
+    }
+
+
+    public static class NumberedTitleManager {
+        private final String zeroNameFormat;
+        private final String numberedNameFormat;
+        private final Pattern zeroNamePattern;
+        private final Pattern numberedNamePattern;
+
+        public NumberedTitleManager(String coreName) {
+            zeroNameFormat = coreName;
+            numberedNameFormat = coreName + " (%d)";
+            zeroNamePattern = Pattern.compile("^" + coreName + "(?! \\([0-9]+\\))");
+            numberedNamePattern = Pattern.compile("^" + coreName + " \\(([0-9]+)\\)");
+        }
+
+        public int getNumber(HWndCtrl hWndCtrl) {
+            if (hWndCtrl.isEmpty()) return -1;
+            return getNumber(hWndCtrl.windowText);
+        }
+
+        public int getNumber(String windowText) {
+            if (windowText.isEmpty()) return -1;
+            if (zeroNamePattern.matcher(windowText).find()) return 0;
+            try {
+                Matcher matcher = numberedNamePattern.matcher(windowText);
+                return matcher.find() ? Integer.parseInt(matcher.group(1)) : -1;
+            } catch (NumberFormatException ignored) {
+                return -1;
+            }
+        }
+
+        public String getIdleTitle() {
+            String title = String.format(zeroNameFormat);
+            if (User32.INSTANCE.FindWindow(null, title) == null) {
+                return title;
+            } else {
+                for (int cur = 2; cur <= 1024 ; cur ++) {
+                    title = String.format(numberedNameFormat, cur);
+                    if (User32.INSTANCE.FindWindow(null, title) == null)
+                        return title;
+                }
+                throw new IllegalStateException("Failed to get idle title.");
+            }
+        }
     }
 }

@@ -18,7 +18,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 import static cn.harryh.arkpets.Const.*;
 
@@ -57,7 +60,7 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 	public void create() {
 		// When the APP was created
 		// 1.App setup
-		Logger.info("App", "Create");
+		Logger.info("App", "Create with title \"" + APP_TITLE + "\"");
 		Gdx.input.setInputProcessor(this);
 		config = Objects.requireNonNull(ArkConfig.getConfig());
 		APP_FPS = config.display_fps;
@@ -330,7 +333,7 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 		int absX = x + (int)(windowPosition.now().x);
 		int absY = y + (int)(windowPosition.now().y);
 		for (HWndCtrl hWndCtrl : hWndList) {
-			if (getArkPetsWindowNum(hWndCtrl.windowText) < 0)
+			if (coreTitleManager.getNumber(hWndCtrl) < 0)
 				if (hWndCtrl.posLeft <= absX && hWndCtrl.posRight > absX)
 					if (hWndCtrl.posTop <= absY && hWndCtrl.posBottom > absY) {
 						int relX = absX - hWndCtrl.posLeft;
@@ -343,12 +346,11 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 
 	private HWndCtrl refreshWindowIdx() {
 		hWndList = HWndCtrl.getWindowList(true);
-		//Logger.debug("HWND", windowList.toString());
 		HWndCtrl minWindow = null;
 		HashMap<Integer, HWndCtrl> line = new HashMap<>();
 		int myPos = (int)(windowPosition.now().x + WD_W / 2);
 		int minNum = 2048;
-		int myNum = getArkPetsWindowNum(APP_TITLE);
+		int myNum = coreTitleManager.getNumber(APP_TITLE);
 		final float quantityProduct = 1;
 		if (plane != null) {
 			// Reset plane additions.
@@ -356,7 +358,7 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 			plane.pointCharges.clear();
 		}
 		for (HWndCtrl hWndCtrl : hWndList) {
-			int wndNum = getArkPetsWindowNum(hWndCtrl.windowText);
+			int wndNum = coreTitleManager.getNumber(hWndCtrl);
 			// Distinguish non-peer windows from peers.
 			if (wndNum == -1) {
 				if (hWndCtrl.posLeft <= myPos && myPos <= hWndCtrl.posRight) {
@@ -377,7 +379,7 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 				}
 				// Find the last peer window to handle the z-index.
 				if (wndNum > myNum && wndNum < minNum) {
-					minNum = getArkPetsWindowNum(hWndCtrl.windowText);
+					minNum = coreTitleManager.getNumber(hWndCtrl);
 					minWindow = hWndCtrl;
 				}
 			}
@@ -434,27 +436,6 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 				hWndMine.setForeground();
 			}
 		}
-	}
-
-	public static int getArkPetsWindowNum(String title) {
-		final String prefix = coreTitle;
-		final String prefix2 = " (";
-		final String suffix = ")";
-		if (title != null && !title.isEmpty()) {
-			try {
-				if (title.indexOf(prefix) == 0) {
-					if (title.equals(prefix))
-						return 0;
-					if (title.indexOf(prefix+prefix2) == 0)
-						if (title.lastIndexOf(suffix) == title.length()-suffix.length())
-							return Integer.parseInt(title.substring(prefix.length()+prefix2.length(), title.length()-suffix.length()));
-				}
-			} catch (Exception e) {
-				Logger.error("Window", "Unable to get ArkPets window number, details see below.", e);
-				return -1;
-			}
-		}
-		return -1; // Not ArkPets window
 	}
 
 	/* WINDOW WALKING RELATED */

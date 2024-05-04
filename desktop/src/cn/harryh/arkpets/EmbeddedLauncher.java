@@ -8,8 +8,6 @@ import cn.harryh.arkpets.utils.Logger;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
-import com.sun.jna.platform.win32.User32;
-import com.sun.jna.platform.win32.WinDef.HWND;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.system.MemoryUtil;
@@ -69,7 +67,7 @@ public class EmbeddedLauncher {
             config.setWindowedMode(coreWidthDefault, coreHeightDefault);
             config.setWindowPosition(0, 0);
             // Configure window title
-            final String TITLE = applyWindowTitle();
+            final String TITLE = coreTitleManager.getIdleTitle();
             config.setTitle(TITLE);
             // Configure window display
             config.setInitialVisible(true);
@@ -93,18 +91,5 @@ public class EmbeddedLauncher {
         }
         Logger.info("System", "Exited from EmbeddedLauncher successfully");
         System.exit(0);
-    }
-
-    private static String applyWindowTitle() {
-        final String prefix = coreTitle;
-        int cnt = 1;
-        String tmp = "";
-        HWND hwnd_test = User32.INSTANCE.FindWindow(null, prefix);
-        while (hwnd_test != null) {
-            cnt++;
-            tmp = " (" + cnt + ")";
-            hwnd_test = User32.INSTANCE.FindWindow(null, prefix + tmp);
-        }
-        return (prefix + tmp);
     }
 }

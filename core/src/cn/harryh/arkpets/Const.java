@@ -3,6 +3,7 @@
  */
 package cn.harryh.arkpets;
 
+import cn.harryh.arkpets.utils.HWndCtrl.NumberedTitleManager;
 import cn.harryh.arkpets.utils.Logger;
 import cn.harryh.arkpets.utils.Version;
 import javafx.util.Duration;
@@ -22,9 +23,9 @@ public final class Const {
     public static final Version datasetLowestVersion    = new Version(2, 2, 0);
 
     // App name
-    public static final String appName      = "ArkPets";
-    public static final String coreTitle    = appName + " Core";
-    public static final String desktopTitle = appName + " Launcher " + appVersion;
+    public static final String appName                          = "ArkPets";
+    public static final String desktopTitle                     = appName + " Launcher " + appVersion;
+    public static final NumberedTitleManager coreTitleManager   = new NumberedTitleManager(appName);
 
     // IO presets
     public static final int zipBufferSizeDefault      = 16 * 1024;
