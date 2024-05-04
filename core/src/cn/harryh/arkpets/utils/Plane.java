@@ -26,12 +26,11 @@ public class Plane {
     private float droppedHeight = 0;
 
     /** Initializes a plane with gravity field.
-     * @param world The collection of all available areas.
      */
-    public Plane(ArrayList<RectArea> world) {
+    public Plane() {
         barriers        = new ArrayList<>();
         pointCharges    = new ArrayList<>();
-        this.world      = world;
+        this.world      = new ArrayList<>();
         obj             = new Vector2(0, 0);
         position        = new Vector2(0, 0);
         speed           = new Vector2(0, 0);

@@ -18,7 +18,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -44,10 +43,8 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 
 	private final String APP_TITLE;
 	private final MouseStatus mouseStatus = new MouseStatus();
-	private int APP_FPS = fpsDefault;
-	private float WD_SCALE; // Window Scale
-	private int WD_W; // Window Real Width
-	private int WD_H; // Window Real Height
+	private int width; // Window Real Width
+	private int height; // Window Real Height
 	private int offsetY = 0;
 	private boolean isToolwindowStyle = false;
 	private boolean isAlwaysTransparent = false;
@@ -61,11 +58,10 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 		// When the APP was created
 		// 1.App setup
 		Logger.info("App", "Create with title \"" + APP_TITLE + "\"");
+		config = Objects.requireNonNull(ArkConfig.getConfig(), "ArkConfig returns a null instance, please check the config file.");
 		Gdx.input.setInputProcessor(this);
-		config = Objects.requireNonNull(ArkConfig.getConfig());
-		APP_FPS = config.display_fps;
-		Gdx.graphics.setForegroundFPS(APP_FPS);
-		getHWndLoopCtrl = new LoopCtrl(1f / APP_FPS * 4);
+		Gdx.graphics.setForegroundFPS(config.display_fps);
+
 		// 2.Character setup
 		Logger.info("App", "Using model asset \"" + config.character_asset + "\"");
 		cha = new ArkChar(config, skelBaseScale);
@@ -73,25 +69,39 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 		cha.adjustCanvas(behavior.defaultAnim().animClip().stage);
 		cha.setAnimation(behavior.defaultAnim());
 		Logger.info("Animation", "Available animation stages " + behavior.getStages());
-		// 3.Window params setup
-		windowPosition = new TransitionVector2(TernaryFunction.EASE_OUT_CUBIC, easingDuration);
-		windowAlpha = new TransitionFloat(TernaryFunction.EASE_OUT_CUBIC, easingDuration);
-		windowAlpha.reset(1f);
-		WD_SCALE = config.display_scale;
-		WD_W = (int)(WD_SCALE * cha.camera.getWidth());
-		WD_H = (int)(WD_SCALE * cha.camera.getHeight());
-		// 4.Plane setup
-		plane = new Plane(new ArrayList<>());
+
+		// 3.Plane setup
+		width = (int)(config.display_scale * cha.camera.getWidth());
+		height = (int)(config.display_scale * cha.camera.getHeight());
+		plane = new Plane();
 		plane.setGravity(config.physic_gravity_acc);
 		plane.setResilience(0);
 		plane.setFrict(config.physic_air_friction_acc, config.physic_static_friction_acc);
-		plane.setObjSize(WD_W, WD_H);
+		plane.setObjSize(width, height);
 		plane.setSpeedLimit(config.physic_speed_limit_x, config.physic_speed_limit_y);
-		ArkConfig.Monitor primaryMonitor = ArkConfig.Monitor.getMonitors()[0];
-		initWindow((int)(primaryMonitor.size[0] * config.initial_position_x - (WD_SCALE * cha.camera.getWidth()) / 2),
-				(int)(primaryMonitor.size[1] * config.initial_position_y));
-		// 5.Tray icon setup
+		ArkConfig.Monitor primaryMonitor = refreshMonitorInfo();
+		plane.changePosition(0,
+				primaryMonitor.size[0] * config.initial_position_x - width / 2f,
+				-(primaryMonitor.size[1] * config.initial_position_y + height)
+		);
+
+		// 4.Window position setup
+		getHWndLoopCtrl = new LoopCtrl(1f / config.display_fps * 4);
+		windowPosition = new TransitionVector2(TernaryFunction.EASE_OUT_CUBIC, easingDuration);
+		windowPosition.reset(plane.getX(), - (height + plane.getY()) + offsetY);
+		windowPosition.setToEnd();
+		setWindowPos();
+
+		// 5.Window style setup
+		windowAlpha = new TransitionFloat(TernaryFunction.EASE_OUT_CUBIC, easingDuration);
+		windowAlpha.reset(1f);
+		hWndMine = new HWndCtrl(null, APP_TITLE);
+		hWndMine.setWindowExStyle(HWndCtrl.WS_EX_LAYERED | (config.window_style_topmost ? HWndCtrl.WS_EX_TOPMOST : 0));
+		promiseToolwindowStyle(1000);
+
+		// 6.Tray icon setup
 		tray = new MemberTrayImpl(this, new SocketClient());
+
 		// Setup complete
 		Logger.info("App", "Render");
 	}
@@ -127,7 +137,7 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 		changeAnimation(newAnim); // Apply the new anim.
 
 		// 3.Window properties.
-		windowPosition.reset(plane.getX(), - (WD_H + plane.getY()) + offsetY);
+		windowPosition.reset(plane.getX(), - (height + plane.getY()) + offsetY);
 		windowPosition.addProgress(Gdx.graphics.getDeltaTime());
 		setWindowPos();
 		if (!windowAlpha.isEnded()) {
@@ -156,9 +166,9 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 		if (canChangeStage()) {
 			behavior.nextStage();
 			cha.adjustCanvas(behavior.getCurrentStage());
-			WD_W = (int)(WD_SCALE * cha.camera.getWidth());
-			WD_H = (int)(WD_SCALE * cha.camera.getHeight());
-			plane.setObjSize(WD_W, WD_H);
+			width = (int)(config.display_scale * cha.camera.getWidth());
+			height = (int)(config.display_scale * cha.camera.getHeight());
+			plane.setObjSize(width, height);
 			Logger.info("Animation", "Changed to " + behavior.getCurrentStage());
 			changeAnimation(behavior.defaultAnim());
 		}
@@ -196,7 +206,7 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 					tray.hideDialog();
 				} else if (button == Input.Buttons.RIGHT) {
 					// Right Click: Toggle the menu
-					tray.toggleDialog((int)(plane.getX() + screenX), (int)(-plane.getY() - WD_H));
+					tray.toggleDialog((int)(plane.getX() + screenX), (int)(-plane.getY() - height));
 				}
 			}
 		}
@@ -213,7 +223,7 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 				// Update window position
 				int x = (int)(windowPosition.now().x + screenX - mouseStatus.x);
 				int y = (int)(windowPosition.now().y + screenY - mouseStatus.y);
-				plane.changePosition(Gdx.graphics.getDeltaTime(), x, -(WD_H + y));
+				plane.changePosition(Gdx.graphics.getDeltaTime(), x, -(height + y));
 				windowPosition.setToEnd();
 				tray.hideDialog();
 				return true;
@@ -293,38 +303,20 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 	}
 
 	private boolean isMouseAtSolidPixel() {
-		int pixel = cha.getPixel(mouseStatus.x, WD_H - mouseStatus.y - 1);
+		int pixel = cha.getPixel(mouseStatus.x, height - mouseStatus.y - 1);
 		return (pixel & 0x000000FF) > 0;
 	}
 
 	/* WINDOW OPERATIONS */
-	private void initWindow(int x, int y) {
-		// Initialize HWnd
-		if (hWndMine == null || hWndMine.isEmpty())
-			hWndMine = new HWndCtrl(null, APP_TITLE);
-		hWndTopmost = refreshWindowIdx();
-		// Set the initial style of the window
-		hWndMine.setWindowExStyle(HWndCtrl.WS_EX_LAYERED | HWndCtrl.WS_EX_TOPMOST);
-		hWndMine.setWindowTransparent(false);
-		refreshMonitorInfo();
-		promiseToolwindowStyle(1000);
-		// Set the initial position of the window
-		plane.changePosition(0, x, - (y + WD_H));
-		windowPosition.reset(plane.getX(), - (WD_H + plane.getY()) + offsetY);
-		windowPosition.setToEnd();
-		setWindowPos();
-	}
-
 	private void setWindowPos() {
 		if (hWndMine == null) return;
 		if (getHWndLoopCtrl.isExecutable(Gdx.graphics.getDeltaTime())) {
 			refreshMonitorInfo();
-			HWndCtrl new_hwnd_topmost = refreshWindowIdx();
-			if (new_hwnd_topmost != hWndTopmost)
-				hWndTopmost = new_hwnd_topmost;
+			HWndCtrl new_hwnd_topmost = refreshWindowIndex();
+			hWndTopmost = new_hwnd_topmost != hWndTopmost ? new_hwnd_topmost : hWndTopmost;
 			hWndMine.setWindowTransparent(isAlwaysTransparent);
 		}
-		hWndMine.setWindowPosition(hWndTopmost, (int)windowPosition.now().x, (int)windowPosition.now().y, WD_W, WD_H);
+		hWndMine.setWindowPosition(hWndTopmost, (int)windowPosition.now().x, (int)windowPosition.now().y, width, height);
 	}
 
 	private RelativeWindowPosition getRelativeWindowPositionAt(int x, int y) {
@@ -344,11 +336,11 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 		return null;
 	}
 
-	private HWndCtrl refreshWindowIdx() {
+	private HWndCtrl refreshWindowIndex() {
 		hWndList = HWndCtrl.getWindowList(true);
 		HWndCtrl minWindow = null;
 		HashMap<Integer, HWndCtrl> line = new HashMap<>();
-		int myPos = (int)(windowPosition.now().x + WD_W / 2);
+		int myPos = (int)(windowPosition.now().x + width / 2);
 		int minNum = 2048;
 		int myNum = coreTitleManager.getNumber(APP_TITLE);
 		final float quantityProduct = 1;
@@ -399,18 +391,18 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 				}
 			}
 		}
-		return minWindow; // Return the last peer window.
+		return config.window_style_topmost ? minWindow : HWndCtrl.EMPTY; // Return the last peer window.
 	}
 
-	private void refreshMonitorInfo() {
+	private ArkConfig.Monitor refreshMonitorInfo() {
 		ArkConfig.Monitor[] monitors = ArkConfig.Monitor.getMonitors();
 		if (monitors.length == 0) {
-			Logger.error("App", "Failed to get monitors information");
-			throw new RuntimeException("Launch ArkPets failed due to monitors config error.");
+			Logger.error("App", "Failed to get monitors information since no monitor has been found");
+			throw new RuntimeException("Failed to refresh monitors config.");
 		}
 		plane.world.clear();
 		boolean flag = true;
-		for (ArkConfig.Monitor i : ArkConfig.Monitor.getMonitors()) {
+		for (ArkConfig.Monitor i : monitors) {
 			if (!flag) break;
 			flag = config.display_multi_monitors;
 			float left = i.virtual[0];
@@ -419,6 +411,7 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 			float bottom = top - i.size[1] + config.display_margin_bottom;
 			plane.world.add(new Plane.RectArea(left, right, top, bottom));
 		}
+		return monitors[0];
 	}
 
 	private void promiseToolwindowStyle(int maxRetries) {
@@ -440,7 +433,7 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 
 	/* WINDOW WALKING RELATED */
 	private void walkWindow(float len) {
-		float expectedLen = len * WD_SCALE * (30f / APP_FPS);
+		float expectedLen = len * config.display_scale * (30f / config.display_fps);
 		int realLen = randomRound(expectedLen);
 		float newPlaneX = plane.getX() + realLen;
 		plane.changePosition(Gdx.graphics.getDeltaTime(), newPlaneX, plane.getY());
@@ -455,7 +448,7 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 
 	private boolean willReachBorder(float len) {
 		if (plane == null) return false;
-		return (plane.getX() >= plane.borderRight() - WD_W && len > 0) || (plane.getX() <= plane.borderLeft() && len < 0);
+		return (plane.getX() >= plane.borderRight() - width && len > 0) || (plane.getX() <= plane.borderLeft() && len < 0);
 	}
 
 

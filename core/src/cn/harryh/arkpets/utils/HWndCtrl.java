@@ -301,7 +301,7 @@ public class HWndCtrl {
         public NumberedTitleManager(String coreName) {
             zeroNameFormat = coreName;
             numberedNameFormat = coreName + " (%d)";
-            zeroNamePattern = Pattern.compile("^" + coreName + "(?! \\([0-9]+\\))");
+            zeroNamePattern = Pattern.compile("^" + coreName + "$");
             numberedNamePattern = Pattern.compile("^" + coreName + " \\(([0-9]+)\\)");
         }
 

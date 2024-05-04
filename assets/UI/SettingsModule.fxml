@@ -35,14 +35,14 @@
                 <Label styleClass="config-group-title" text="高级设置"/>
                 <HBox>
                     <JFXCheckBox fx:id="configAutoStartup" mnemonicParsing="false" text="开机自动生成桌宠"/>
-                </HBox>
-                <HBox>
                     <JFXCheckBox fx:id="configSolidExit" mnemonicParsing="false" text="退出程序时也退出桌宠"/>
                 </HBox>
                 <HBox>
+                    <JFXCheckBox fx:id="configWindowTopmost" mnemonicParsing="false" text="桌宠窗口置顶"/>
                     <JFXCheckBox fx:id="configWindowToolwindow" mnemonicParsing="false" text="桌宠作为后台程序启动"/>
                     <JFXButton fx:id="configWindowToolwindowHelp"/>
                 </HBox>
+                <Separator/>
                 <HBox>
                     <Label text="日志级别"/>
                     <JFXComboBox fx:id="configLoggingLevel" prefWidth="100.0"/>

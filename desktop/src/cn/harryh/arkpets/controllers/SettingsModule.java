@@ -38,6 +38,8 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
     @FXML
     private JFXComboBox<NamedItem<Integer>> configCanvasSize;
     @FXML
+    private JFXCheckBox configWindowTopmost;
+    @FXML
     private JFXComboBox<String> configLoggingLevel;
     @FXML
     private Label exploreLogDir;
@@ -121,11 +123,17 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
                 return new ControlHandbook((Labeled)configCanvasSize.getParent().getChildrenUnmodifiable().get(0)) {
                     @Override
                     public String getContent() {
-                        return "桌宠窗口边界的相对大小。更宽的边界能够防止动画溢出；更窄的边界能够防止鼠标误触。";
+                        return "设置桌宠窗口边界的相对大小。更宽的边界能够防止动画溢出；更窄的边界能够防止鼠标误触。";
                     }
                 };
             }
         };
+
+        configWindowTopmost.setSelected(app.config.window_style_topmost);
+        configWindowTopmost.setOnAction(e -> {
+            app.config.window_style_topmost = configWindowTopmost.isSelected();
+            app.config.save();
+        });
     }
 
     private void initConfigAdvanced() {
@@ -237,7 +245,7 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
                 return new ControlHandbook(configWindowToolwindow) {
                     @Override
                     public String getContent() {
-                        return "桌宠将以后台工具程序的样式启动。启用时，桌宠不会在任务栏中显示程序图标。禁用时，作为普通程序的桌宠可以被直播流软件捕获。";
+                        return "启用时，桌宠将以后台工具程序的样式启动，不会在任务栏中显示程序图标。禁用时，作为普通程序启动的桌宠可以被直播流软件捕获。";
                     }
                 };
             }

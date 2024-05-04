@@ -84,6 +84,8 @@ public class ArkConfig implements Serializable {
     public float        physic_speed_limit_y;
     /** @since ArkPets 3.2 */ @JSONField(defaultValue = "true")
     public boolean      window_style_toolwindow;
+    /** @since ArkPets 3.2 */ @JSONField(defaultValue = "true")
+    public boolean      window_style_topmost;
 
     private ArkConfig() {
     }
