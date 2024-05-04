@@ -74,7 +74,7 @@ public class EmbeddedLauncher {
             // Configure window display
             config.setInitialVisible(true);
             config.setTransparentFramebuffer(true);
-            config.setInitialBackgroundColor(new Color(0,0,0,0));
+            config.setInitialBackgroundColor(Color.CLEAR);
             // Handle GLFW error
             GLFW.glfwSetErrorCallback(new GLFWErrorCallback() {
                 @Override

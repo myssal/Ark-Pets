@@ -75,6 +75,7 @@ public final class Const {
     // Misc constants
     public static String ipPortRegex = "^((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?):\\d{1,5}$";
 
+
     /** Paths presets definition class.
      */
     public static class PathConfig {
@@ -114,6 +115,9 @@ public final class Const {
         public static final String debugArg = "--debug";
     }
 
+
+    /** Fonts provider class.
+     */
     public static class FontsConfig {
         private static final String fontFileRegular  = "/fonts/SourceHanSansCN-Regular.otf";
         private static final String fontFileBold     = "/fonts/SourceHanSansCN-Bold.otf";

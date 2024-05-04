@@ -80,7 +80,7 @@ public class HWndCtrl {
      */
     public HWndCtrl() {
         hWnd = null;
-        windowText = null;
+        windowText = "";
         windowPointer = null;
         posTop = 0;
         posBottom = 0;
@@ -260,11 +260,11 @@ public class HWndCtrl {
 
     private static String getWindowText(HWND hWnd) {
         char[] text = new char[1024];
-        User32.INSTANCE.GetWindowText(hWnd, text, 512);
+        User32.INSTANCE.GetWindowText(hWnd, text, 1024);
         return Native.toString(text);
     }
 
-    private static  RECT getWindowRect(HWND hWnd) {
+    private static RECT getWindowRect(HWND hWnd) {
         RECT rect = new RECT();
         User32.INSTANCE.GetWindowRect(hWnd, rect);
         return rect;

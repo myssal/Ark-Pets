@@ -23,9 +23,9 @@ import static cn.harryh.arkpets.Const.zipBufferSizeDefault;
 public class IOUtils {
     public static class FileUtil {
         /** Reads the entire file into a byte array.
-         * @param file The file to be read.
+         * @param file The file to read from.
          * @return A byte array.
-         * @throws IOException If I/O error occurs. It may be FileNotFoundException, etc.
+         * @throws IOException If I/O error occurs.
          */
         public static byte[] readByte(File file)
                 throws IOException {
@@ -38,10 +38,10 @@ public class IOUtils {
         }
 
         /** Reads the entire file into a string using the specified charset.
-         * @param file        The file to be read.
+         * @param file The file to read from.
          * @param charsetName The name of the specified charset.
          * @return A String.
-         * @throws IOException If I/O error occurs. It may be FileNotFoundException, UnsupportedEncodingException, etc.
+         * @throws IOException If I/O error occurs or the charset is not supported.
          */
         public static String readString(File file, String charsetName)
                 throws IOException {
@@ -60,8 +60,8 @@ public class IOUtils {
         }
 
         /** Writes a byte array into a file.
-         * @param file The file to be written.
-         * @param content The specified bytes.
+         * @param file The file to write to.
+         * @param content The specified bytes to be written.
          * @param append If false, the existed file will be overwritten; If true, content will be appended to its end.
          * @throws IOException If I/O error occurs. It may be FileNotFoundException, etc.
          */
@@ -77,9 +77,9 @@ public class IOUtils {
         }
 
         /** Writes a string into a file using the specified charset.
-         * @param file The file to be written.
+         * @param file The file to write to.
          * @param charsetName The name of the specified charset.
-         * @param content The specified string.
+         * @param content The specified string to be written.
          * @param append If false, the existed file will be overwritten; If true, content will be appended to its end.
          * @throws IOException If I/O error occurs. It may be FileNotFoundException, etc.
          */

@@ -191,7 +191,7 @@ public class ArkConfig {
 
         public static boolean isSetStartup() {
             try {
-                if (!Files.exists(startupFile.toPath()))
+                if (!startupFile.exists())
                     return false;
                 String script = generateScript();
                 if (script == null || startupDir == null)
@@ -208,7 +208,7 @@ public class ArkConfig {
          * @return The script's content.
          */
         public static String generateScript() {
-            if (!Files.exists(new File(startupTarget).toPath()))
+            if (!new File(startupTarget).exists())
                 return null;
             String cd = System.getProperty("user.dir");
             cd = cd.replaceAll("\"", "\"\"");
@@ -269,11 +269,11 @@ public class ArkConfig {
                     list.add(fromJSONObject((JSONObject)o));
             return list.toArray(new Monitor[0]);
         }
-        
+
         public static JSONObject toJSONObject(Monitor monitor) {
             return (JSONObject)JSON.toJSON(monitor);
         }
-        
+
         public static JSONArray toJSONArray(Monitor[] monitors) {
             JSONArray array = new JSONArray();
             for (Monitor m : monitors)

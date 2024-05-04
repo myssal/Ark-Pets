@@ -104,7 +104,7 @@ public class ArkChar {
             }
         };
         // 6.Canvas setup
-        setCanvas(new Color(0, 0, 0, 0));
+        setCanvas(Color.CLEAR);
         stageInsertMap = new HashMap<>();
         for (AnimStage stage : animList.clusterByStage().keySet()) {
             // Figure out the suitable canvas size
