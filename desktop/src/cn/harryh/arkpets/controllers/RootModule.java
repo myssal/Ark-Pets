@@ -240,16 +240,8 @@ public final class RootModule implements Controller<ArkHomeFX> {
                         startArkPetsCore();
                         Thread.sleep(1200);
                         // Show handbook in the first-run.
-                        if (isNewcomer && !trayExitHandbook.hasShown()) {
-                            Handbook b = trayExitHandbook;
-                            GuiPrefabs.DialogUtil.createCommonDialog(app.root,
-                                    b.getIcon(),
-                                    b.getTitle(),
-                                    b.getHeader(),
-                                    b.getContent(),
-                                    null).show();
-                            b.setShown();
-                        }
+                        if (isNewcomer && !trayExitHandbook.hasShown())
+                            trayExitHandbook.show(app.root);
                     } catch (InterruptedException ignored) {
                     } finally {
                         launchBtn.setDisable(false);

@@ -9,7 +9,7 @@ import cn.harryh.arkpets.Const;
 import cn.harryh.arkpets.guitasks.CheckAppUpdateTask;
 import cn.harryh.arkpets.guitasks.GuiTask;
 import cn.harryh.arkpets.utils.*;
-import cn.harryh.arkpets.utils.GuiComponents.NamedItem;
+import cn.harryh.arkpets.utils.GuiComponents.*;
 import com.jfoenix.controls.*;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
@@ -36,7 +36,7 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
     @FXML
     private JFXComboBox<NamedItem<Integer>> configDisplayFps;
     @FXML
-    public JFXComboBox<NamedItem<Integer>> configCanvasSize;
+    private JFXComboBox<NamedItem<Integer>> configCanvasSize;
     @FXML
     private JFXComboBox<String> configLoggingLevel;
     @FXML
@@ -50,6 +50,12 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
     @FXML
     private JFXCheckBox configSolidExit;
     @FXML
+    private JFXButton configCanvasSizeHelp;
+    @FXML
+    private JFXCheckBox configWindowToolwindow;
+    @FXML
+    private JFXButton configWindowToolwindowHelp;
+    @FXML
     private Label aboutQueryUpdate;
     @FXML
     private Label aboutVisitWebsite;
@@ -58,9 +64,9 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
     @FXML
     private Label aboutGitHub;
 
-    private GuiComponents.NoticeBar appVersionNotice;
-    private GuiComponents.NoticeBar diskFreeSpaceNotice;
-    private GuiComponents.NoticeBar fpsUnreachableNotice;
+    private NoticeBar appVersionNotice;
+    private NoticeBar diskFreeSpaceNotice;
+    private NoticeBar fpsUnreachableNotice;
 
     private ArkHomeFX app;
 
@@ -75,7 +81,7 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
     }
 
     private void initConfigDisplay() {
-        new GuiComponents.ComboBoxSetup<>(configDisplayScale).setItems(new NamedItem<>("x0.5", 0.5f),
+        new ComboBoxSetup<>(configDisplayScale).setItems(new NamedItem<>("x0.5", 0.5f),
                 new NamedItem<>("x0.75", 0.75f),
                 new NamedItem<>("x1.0", 1f),
                 new NamedItem<>("x1.25", 1.25f),
@@ -88,7 +94,7 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
                     app.config.display_scale = newValue.value();
                     app.config.save();
                 });
-        new GuiComponents.ComboBoxSetup<>(configDisplayFps).setItems(new NamedItem<>("25", 25),
+        new ComboBoxSetup<>(configDisplayFps).setItems(new NamedItem<>("25", 25),
                 new NamedItem<>("30", 30),
                 new NamedItem<>("45", 45),
                 new NamedItem<>("60", 60),
@@ -99,7 +105,7 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
                     app.config.save();
                     fpsUnreachableNotice.refresh();
                 });
-        new GuiComponents.ComboBoxSetup<>(configCanvasSize).setItems(new NamedItem<>("最宽", 4),
+        new ComboBoxSetup<>(configCanvasSize).setItems(new NamedItem<>("最宽", 4),
                 new NamedItem<>("较宽", 8),
                 new NamedItem<>("标准", 16),
                 new NamedItem<>("较窄", 32),
@@ -109,6 +115,17 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
                     app.config.canvas_fitting_samples = newValue.value();
                     app.config.save();
                 });
+        new HandbookEntrance(app.root, configCanvasSizeHelp) {
+            @Override
+            public Handbook getHandbook() {
+                return new ControlHandbook((Labeled)configCanvasSize.getParent().getChildrenUnmodifiable().get(0)) {
+                    @Override
+                    public String getContent() {
+                        return "桌宠窗口边界的相对大小。更宽的边界能够防止动画溢出；更窄的边界能够防止鼠标误触。";
+                    }
+                };
+            }
+        };
     }
 
     private void initConfigAdvanced() {
@@ -208,6 +225,23 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
             app.config.launcher_solid_exit = configSolidExit.isSelected();
             app.config.save();
         });
+
+        configWindowToolwindow.setSelected(app.config.window_style_toolwindow);
+        configWindowToolwindow.setOnAction(e -> {
+            app.config.window_style_toolwindow = configWindowToolwindow.isSelected();
+            app.config.save();
+        });
+        new HandbookEntrance(app.root, configWindowToolwindowHelp) {
+            @Override
+            public Handbook getHandbook() {
+                return new ControlHandbook(configWindowToolwindow) {
+                    @Override
+                    public String getContent() {
+                        return "桌宠将以后台工具程序的样式启动。启用时，桌宠不会在任务栏中显示程序图标。禁用时，作为普通程序的桌宠可以被直播流软件捕获。";
+                    }
+                };
+            }
+        };
     }
 
     private void initAbout() {
@@ -221,7 +255,7 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
     }
 
     private void initNoticeBox() {
-        appVersionNotice = new GuiComponents.NoticeBar(noticeBox) {
+        appVersionNotice = new NoticeBar(noticeBox) {
             @Override
             protected boolean isToActivate() {
                 return isUpdateAvailable;
@@ -247,7 +281,7 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
                 NetUtils.browseWebpage(Const.PathConfig.urlDownload);
             }
         };
-        diskFreeSpaceNotice = new GuiComponents.NoticeBar(noticeBox) {
+        diskFreeSpaceNotice = new NoticeBar(noticeBox) {
             @Override
             protected boolean isToActivate() {
                 long freeSpace = new File(".").getFreeSpace();
@@ -269,7 +303,7 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
                 return "当前磁盘存储空间不足，可能影响使用体验。";
             }
         };
-        fpsUnreachableNotice = new GuiComponents.NoticeBar(noticeBox) {
+        fpsUnreachableNotice = new NoticeBar(noticeBox) {
             @Override
             protected boolean isToActivate() {
                 for (ArkConfig.Monitor i : ArkConfig.Monitor.getMonitors())
@@ -316,5 +350,25 @@ public final class SettingsModule implements Controller<ArkHomeFX> {
         ss.setPeriod(new Duration(5000));
         ss.setRestartOnFailure(true);
         ss.start();
+    }
+
+
+    abstract private static class ControlHandbook extends Handbook {
+        private final Labeled control;
+
+        public ControlHandbook(Labeled control) {
+            super();
+            this.control = control;
+        }
+
+        @Override
+        public String getTitle() {
+            return "选项说明";
+        }
+
+        @Override
+        public String getHeader() {
+            return control.getText();
+        }
     }
 }

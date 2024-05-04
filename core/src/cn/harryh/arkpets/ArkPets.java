@@ -422,7 +422,7 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 	}
 
 	private void promiseToolwindowStyle(int maxRetries) {
-		if (!isToolwindowStyle) {
+		if (config.window_style_toolwindow && !isToolwindowStyle) {
 			// Make sure ArkPets has been set as foreground window once
 			for (int i = 0; ; i++) {
 				if (hWndMine.isForeground()) {
@@ -469,6 +469,7 @@ public class ArkPets extends ApplicationAdapter implements InputProcessor {
 		 */
 		public LoopCtrl(float minIntervalTime) {
 			this.minIntervalTime = minIntervalTime;
+			this.accumTime = minIntervalTime;
 		}
 
 		/** Returns true if the loop is executable now.

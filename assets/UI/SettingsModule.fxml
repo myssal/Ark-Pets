@@ -29,6 +29,7 @@
                 <HBox>
                     <Label text="窗口边界"/>
                     <JFXComboBox fx:id="configCanvasSize" prefWidth="100.0"/>
+                    <JFXButton fx:id="configCanvasSizeHelp"/>
                 </HBox>
                 <Separator/>
                 <Label styleClass="config-group-title" text="高级设置"/>
@@ -37,6 +38,10 @@
                 </HBox>
                 <HBox>
                     <JFXCheckBox fx:id="configSolidExit" mnemonicParsing="false" text="退出程序时也退出桌宠"/>
+                </HBox>
+                <HBox>
+                    <JFXCheckBox fx:id="configWindowToolwindow" mnemonicParsing="false" text="桌宠作为后台程序启动"/>
+                    <JFXButton fx:id="configWindowToolwindowHelp"/>
                 </HBox>
                 <HBox>
                     <Label text="日志级别"/>

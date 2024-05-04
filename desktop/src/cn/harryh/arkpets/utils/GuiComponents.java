@@ -4,6 +4,7 @@
 package cn.harryh.arkpets.utils;
 
 import cn.harryh.arkpets.Const;
+import com.jfoenix.controls.*;
 import javafx.animation.ScaleTransition;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.DoublePropertyBase;
@@ -419,13 +420,13 @@ public class GuiComponents {
         public Handbook() {
         }
 
-        abstract public String getTitle();
+        abstract protected String getTitle();
 
-        abstract public String getHeader();
+        abstract protected String getHeader();
 
-        abstract public String getContent();
+        abstract protected String getContent();
 
-        public SVGPath getIcon() {
+        protected SVGPath getIcon() {
             return GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_HELP_ALT, GuiPrefabs.Colors.COLOR_INFO);
         }
 
@@ -436,5 +437,33 @@ public class GuiComponents {
         public void setShown() {
             hasShown = true;
         }
+
+        public void show(StackPane root) {
+            GuiPrefabs.DialogUtil.createCommonDialog(root,
+                    getIcon(),
+                    getTitle(),
+                    getHeader(),
+                    getContent(),
+                    null
+            ).show();
+            setShown();
+        }
+    }
+
+
+    abstract public static class HandbookEntrance {
+        private static final double scale = 2.0 / 3;
+
+        public HandbookEntrance(StackPane root, JFXButton target) {
+            SVGPath graphic = GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_HELP, GuiPrefabs.Colors.COLOR_INFO);
+            graphic.setScaleX(scale);
+            graphic.setScaleY(scale);
+            target.setText("");
+            target.setGraphic(graphic);
+            target.setRipplerFill(Color.GRAY);
+            target.setOnAction(e -> getHandbook().show(root));
+        }
+
+        abstract protected Handbook getHandbook();
     }
 }
