@@ -4,10 +4,10 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <div align="center" style="text-align:center">
    <h1> Ark-Pets </h1>
-   <img alt="ArkPets icon" width="64" src="https://raw.githubusercontent.com/isHarryh/Ark-Pets/v2.x/assets/icons/icon.png"/>
+   <img alt="ArkPets icon" width="64" src="https://raw.githubusercontent.com/isHarryh/Ark-Pets/v3.x/assets/icons/icon.png"/>
    <p>
       Arknights Desktop Pets | 明日方舟桌宠 <br>
-      <code><b> v3.1 </b></code>
+      <code><b> v3.2 </b></code>
    </p>
    <p>
       <img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/isHarryh/Ark-Pets?label=Java">
@@ -23,50 +23,55 @@
 
 ### 实现的功能
 
-- 支持搜索、筛选和选择《明日方舟》小人模型并作为桌宠启动
-- 支持在启动器中显示模型的详细信息，调整缩放和帧率等设置
-- 实现了在启动器中下载模型文件、检查模型库更新等联网功能
-- 支持模拟游戏内 **干员基建小人** 的行为 <details><summary>查看详情</summary>
-    1. 能够执行行走和坐下的动作
-    2. 能够被鼠标交互 (执行戳一戳动作)
-    3. 能够执行基建动作 (如有)
-- 支持模拟游戏内 **敌方小人** 的行为 <details><summary>查看详情</summary>
-    1. 能够执行行走动作
-    2. 能够被鼠标交互 (执行攻击动作)
-- 实现了模拟平面重力场 <details><summary>查看详情</summary>
-    1. 桌宠在被拖拽到空中后能够自由落体
-    2. 桌宠可以站立在打开的窗口的边缘上
-    3. 桌宠会受地面摩擦力和空气阻力作用
-    4. 桌宠会在其他桌宠靠近时被排斥推动
-    5. 桌宠活动范围的[下边界距离](#额外说明)可以调整
-    6. 桌宠可以被拖拽到扩展显示屏上
-- 实现了系统托盘的菜单 <details><summary>查看详情</summary>
-    1. 右键托盘图标或者桌宠本体均可弹出菜单
-    2. 菜单可用于保持当前动作和启用[透明模式](#额外说明)
-    3. 菜单可用于切换多形态角色的形态
-    4. 菜单可用于退出启动器或单个桌宠
-    5. 启动器运行时，已启动的桌宠将被整合到一个托盘中
-    6. 启动器若没有运行，每个桌宠将分别创建自己的托盘
-- 支持[开机自启动](#额外说明)
+1. **支持将《明日方舟》角色模型作为桌宠启动。**<details><summary>查看详情</summary>
+    现已支持的模型类型包括：
+    1. 干员基建小人（含时装）；
+    2. 干员动态立绘（含时装）；
+    3. 敌方战斗小人。
+2. **启动器提供图形用户界面以便浏览模型和调整桌宠设置。** <details><summary>查看详情</summary>
+    1. 可以按名称搜索或按类别筛选以查找模型；
+    2. 可以从互联网中下载由社区维护的模型库；
+    3. 可以自定义桌宠的动作交互、部署位置和物理参数等行为设置；
+    4. 可以自定义桌宠的图像缩放、最大帧率和窗口边界等显示设置。
+3. **支持模拟游戏内干员基建小人的行为。** <details><summary>查看详情</summary>
+    1. 能够执行行走和坐下的动作；
+    2. 能够被鼠标交互以执行戳一戳动作；
+    3. 拥有特殊基建动作的干员，有概率执行特殊基建动作。
+4. **支持模拟游戏内敌方小人的行为。** <details><summary>查看详情</summary>
+    1. 拥有行走动作的敌人，能够执行行走动作；
+    2. 拥有攻击动作的敌人，能够被鼠标交互。
+5. **实现了模拟平面重力场** <details><summary>查看详情</summary>
+    1. 桌宠支持自由落体等物理现象；
+    2. 桌宠可以被拖拽到扩展显示屏上；
+    3. 桌宠可以站立在打开的窗口的边缘上；
+    4. 桌宠会在其他桌宠靠近时被排斥推动。
+6. **实现了系统托盘的菜单** <details><summary>查看详情</summary>
+    1. 右键托盘图标或者桌宠本体均可弹出菜单；
+    2. 菜单可用于保持当前动作和启用透明模式；
+    3. 菜单可用于切换多形态角色的形态；
+    4. 菜单可用于退出启动器或单个桌宠；
+    5. 启动器运行时，已启动的桌宠将被整合到一个托盘中；
+    6. 启动器若没有运行，每个桌宠将分别创建自己的托盘。
+7. **支持开机自启动等[其他特性](#其他特性)**
 
 <!-- OLD CONTENTS
 ### 效果预览图
 
 <table style="margin-left: auto; margin-right: auto;">
     <tr>
-        <td> <img alt="demo1" width="250" src="https://raw.githubusercontent.com/isHarryh/Ark-Pets/v2.x/docs/imgs/demo_1.png"> </td>
-        <td> <img alt="demo2" width="250" src="https://raw.githubusercontent.com/isHarryh/Ark-Pets/v2.x/docs/imgs/demo_2.png"> </td>
-        <td> <img alt="demo3" width="250" src="https://raw.githubusercontent.com/isHarryh/Ark-Pets/v2.x/docs/imgs/demo_3.png"> </td>
+        <td> <img alt="demo1" width="250" src="https://raw.githubusercontent.com/isHarryh/Ark-Pets/v3.x/docs/imgs/demo_1.png"> </td>
+        <td> <img alt="demo2" width="250" src="https://raw.githubusercontent.com/isHarryh/Ark-Pets/v3.x/docs/imgs/demo_2.png"> </td>
+        <td> <img alt="demo3" width="250" src="https://raw.githubusercontent.com/isHarryh/Ark-Pets/v3.x/docs/imgs/demo_3.png"> </td>
     </tr>
 </table>
 -->
 
 ### 下一步计划
 
-以下内容可能于后续版本实现：
+以下内容可能在遥远的将来被实现：
 
 - 国际化
-- 支持我方干员战斗小人
+- 支持干员语音功能
 - 全面更新依赖库的版本
 - 覆写默认着色器和光照系统
 - 支持透明模式等配置的记忆
@@ -79,28 +84,28 @@
 
 ## 使用方法 <sub>Usage</sub>
 
-|                                            **[目前最新版本](https://github.com/isHarryh/Ark-Pets/releases)**                                             |                                   **支持的操作系统**                                    |
-|:--------------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------:|
-| ![GitHub latest release](https://img.shields.io/github/v/release/isHarryh/Ark-Pets?display_name=tag&label=Release&sort=semver&include_prereleases) | ![Windows 7+](https://img.shields.io/badge/7%2B-blue?logo=Windows&label=Windows) |
+|                                            **[目前最新版本](https://github.com/isHarryh/Ark-Pets/releases)**                                             |                                  **支持的操作系统**                                  |
+|:--------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------:|
+| ![GitHub Latest Release](https://img.shields.io/github/v/release/isHarryh/Ark-Pets?display_name=tag&label=Release&sort=semver&include_prereleases) | ![Windows](https://img.shields.io/badge/7%2B-blue?logo=Windows&label=Windows) |
 
 ### 快速上手
 
 1. 请[**前往此页面**](https://github.com/isHarryh/Ark-Pets/releases)下载最新的 **ArkPets-Setup.exe** 安装包。
 2. 运行安装包并进行软件的安装。安装完成后，打开 ArkPets 启动器。
-3. 首次使用时需要**下载模型文件**。请进入启动器 “选项” 页面，在模型下载处点击 “全部下载” 按钮。
-4. 进入启动器 “模型” 页面即可检索并选中想要作为桌宠启动的角色，最后点击左下角 “启动” 按钮即可。
+3. 首次使用时需要**下载模型文件**。请在启动器 “模型” 页面中的 “模型库管理” 面板点击 “下载模型” 按钮。
+4. 在启动器 “模型” 页面中检索并选中想要作为桌宠启动的角色，最后点击左下角 “启动” 按钮即可生成桌宠。
 
 > 提示：
 > - 如需关闭已启动的桌宠，请右键单击桌宠或系统托盘中的 ArkPets 图标，然后选择 “退出”。
-> - 若无法在软件内下载模型，可以访问 [ArkModels 模型仓库](https://github.com/isHarryh/Ark-Models)页面。手动下载模型压缩包后，在 “选项” 页面点击 “导入压缩包” 按钮后导入即可。
-> - 如需将软件从 v2.x 更新到更高版本，无需预先手动卸载，直接运行新版安装包即可。
+> - 若无法在软件内下载模型，可以访问 [ArkModels 模型仓库](https://github.com/isHarryh/Ark-Models) 页面，手动下载模型压缩包后，在 “模型库管理” 面板点击 “导入压缩包” 按钮后导入模型。
+> - 如需将软件从 v2.x 或 v3.x 更新到更高版本，无需预先手动卸载，直接运行新版安装包即可。
 
-### 额外说明
+### 其他特性
 
-- *检查模型库更新* ：我们的模型库不定期更新，如果您想体验新实装进游戏的模型，可以进入启动器“选项”页面，在“模型下载”处点击“检查更新”。如果提示有更新，点击“全部下载”就能完成模型库更新。
-- *开机自启动* ：进入启动器“选项”页面可以设置开机自启动，设置后下一次电脑开机会自动生成最后一次启动的桌宠。
-- *透明模式* ：为防止用户在游戏、观看视频等情景下误触到桌宠，特增加了此模式。右键托盘后打开“透明模式”，即可屏蔽桌宠和鼠标的一切交互（点击、拖动操作都将穿透到下层窗口），并且桌宠的不透明度会降低。
-- *下边界距离* ：桌宠在部分用户的电脑上无法正常检测任务栏位置（桌宠会沉入任务栏），此时您可以手动设置任务栏高度。进入启动器“选项”页面可以调整下边界距离，通常会将其设置为15的正整数倍。
+- **检查模型库更新** ：我们的模型库不定期更新，如果您想体验新实装进游戏的模型，可以在 “模型库管理” 面板点击 “检查更新” 按钮。如果提示有更新，则可点击 “重新下载” 按钮来下载模型。
+- **开机自启动** ：进入启动器 “选项” 页面可以设置开机自启动，设置后下一次电脑开机会自动生成最后一次启动的桌宠。
+- **透明模式** ：为防止用户在游戏、观看视频等情景下误触到桌宠，特增加了此模式。在托盘菜单中打开 “透明模式”，即可屏蔽桌宠和鼠标的一切交互（点击、拖动操作都将穿透到下层窗口），并且桌宠会变得透明。
+- **下边界距离** ：桌宠在部分用户的电脑上无法正常检测任务栏位置（桌宠会沉入任务栏），此时您可以手动设置任务栏高度。进入启动器 “行为” 页面可以调整下边界距离，通常会将其设置为15的正整数倍。
 
 ### 高级用法
 
@@ -110,6 +115,7 @@
 - 如果您的电脑上存在 `JDK17` 的 [Java](https://www.java.com) 运行环境，您还可以下载 `jar` 版的程序文件直接运行（但无法使用开机自启动功能）。
 - 如果您想用命令行启动桌宠，[点击查看](docs/CmdLine.md)说明。
 - 如果您想添加自定义的模型，[点击查看](docs/CustomModel.md)说明。
+- 如果您想使用直播流软件捕捉桌宠窗口，可以在启动器 “选项” 页面禁用 “桌宠作为后台程序启动”。
 
 由于需要调用 Win32 特有的 API，目前本程序不支持在其他操作系统运行。
 

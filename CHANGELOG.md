@@ -1,5 +1,20 @@
 # 更新日志 / CHANGELOG
 
+## 3.2
+| **新增**                            |                          |
+|:----------------------------------|:-------------------------|
+| [`#63`]<br>[`#70`]<br>[`6cbf7b2`] | 新增了在启动器抛出错误时的导出日志按钮。     |
+| [`1bef435`]                       | 新增了可以设置桌宠的初始部署位置的功能。     |
+| [`#68`]<br>[`1af28e6`]            | 新增了可以选择禁用将桌宠作为后台程序启动的功能。 |
+| [`c7591f2`]                       | 新增了可以选择禁用将桌宠作为置顶窗口启动的功能。 |
+
+| **优化**                     |                                                                     |
+|:---------------------------|:--------------------------------------------------------------------|
+| [`#62`]<br>[`0f48bc0`]     | 优化了部分显示设置项，已额外支持 2.5/3.0 倍的图像缩放和 120 帧的最大帧率，并且当设置的帧率高于显示器刷新率时会显示提示。 |
+| [`fd880ee`]                | 优化了 GitHub Actions 脚本的依赖项版本。                                        |
+| [`5117eca`]<br>[`9cf0b76`] | 优化了线程池和窗口标题相关的代码逻辑，避免了某些潜在的鲁棒性问题。                                   |
+| [`fcb5111`]                | 优化了配置文件相关的代码逻辑，避免了在字段值缺失时默认填入空值或零值导致的鲁棒性问题。                         |
+
 ## v3.1
 | **新增**                 |                               |
 |:-----------------------|:------------------------------|
@@ -350,6 +365,10 @@
 [`#57`]: https://github.com/isHarryh/Ark-Pets/issues/57
 [`#59`]: https://github.com/isHarryh/Ark-Pets/issues/59
 [`#60`]: https://github.com/isHarryh/Ark-Pets/issues/60
+[`#62`]: https://github.com/isHarryh/Ark-Pets/issues/62
+[`#63`]: https://github.com/isHarryh/Ark-Pets/issues/63
+[`#68`]: https://github.com/isHarryh/Ark-Pets/issues/68
+[`#70`]: https://github.com/isHarryh/Ark-Pets/issues/70
 [`3253706`]: https://github.com/isHarryh/Ark-Pets/commit/3253706fde859a316b3e08362dd57adb98c1df8c
 [`7b2e856`]: https://github.com/isHarryh/Ark-Pets/commit/7b2e8562579ebabbb102b40122cf3130463f03bc
 [`ff82a1e`]: https://github.com/isHarryh/Ark-Pets/commit/ff82a1e21ce396c345038b4cb340f10eeca89cf2
@@ -373,3 +392,12 @@
 [`6c4665b`]: https://github.com/isHarryh/Ark-Pets/commit/6c4665b984aafae7240e1d219c0acd1d6ed26ee2
 [`850f40d`]: https://github.com/isHarryh/Ark-Pets/commit/850f40de2528e7e01b680d21ab1127f35ad6b74f
 [`d3a6ae5`]: https://github.com/isHarryh/Ark-Pets/commit/d3a6ae5c0984d16ccbc810a786d6a595f47a3c96
+[`0f48bc0`]: https://github.com/isHarryh/Ark-Pets/commit/0f48bc0b3c31720385d4d3b1d4b47db84a9661c2
+[`6cbf7b2`]: https://github.com/isHarryh/Ark-Pets/commit/6cbf7b2b2b02e4341e92f0cd085aa8202c721120
+[`5117eca`]: https://github.com/isHarryh/Ark-Pets/commit/5117ecaecb48b45f6929efc1198b283bdd082804
+[`fd880ee`]: https://github.com/isHarryh/Ark-Pets/commit/fd880ee2f8203d7ac7d4d2356fc994145182b26e
+[`1bef435`]: https://github.com/isHarryh/Ark-Pets/commit/1bef4358730bf87e5f36c9ec52dceeba88ebef16
+[`9cf0b76`]: https://github.com/isHarryh/Ark-Pets/commit/9cf0b76303ae65b05e26cc0005f3ea6451f197b2
+[`fcb5111`]: https://github.com/isHarryh/Ark-Pets/commit/fcb51118f68c7765c4ae6171024a8968dc290933
+[`1af28e6`]: https://github.com/isHarryh/Ark-Pets/commit/1af28e6a637e33c4da5e9eac0d2677abe2d53ccc
+[`c7591f2`]: https://github.com/isHarryh/Ark-Pets/commit/c7591f249a6966fafe0111a4414a4a2daede6ad2

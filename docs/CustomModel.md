@@ -3,7 +3,7 @@ ArkPets附加说明文档
 
 ArkPets 添加自定义 Spine 模型的方法。
 > 注意：  
-> 本文档适用于 ArkPets v2.x，不同版本的 ArkPets 的模型管理逻辑可能有较大差异。
+> 本文档适用于 ArkPets v3.x，不同版本的 ArkPets 的模型管理逻辑可能有较大差异。
 
 ### 前提
 1. **熟悉 JSON 数据格式。**
