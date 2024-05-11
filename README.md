@@ -54,7 +54,7 @@
     6. 启动器若没有运行，每个桌宠将分别创建自己的托盘。
 7. **支持开机自启动等[其他特性](#其他特性)**
 
-<!-- OLD CONTENTS
+
 ### 效果预览图
 
 <table style="margin-left: auto; margin-right: auto;">
@@ -64,7 +64,7 @@
         <td> <img alt="demo3" width="250" src="https://raw.githubusercontent.com/isHarryh/Ark-Pets/v3.x/docs/imgs/demo_3.png"> </td>
     </tr>
 </table>
--->
+
 
 ### 下一步计划
 
