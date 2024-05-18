@@ -18,7 +18,7 @@ import static cn.harryh.arkpets.Const.PathConfig;
 import static cn.harryh.arkpets.Const.charsetDefault;
 
 
-public class CheckModelUpdateTask extends FetchGitHubRemoteTask {
+public class  CheckModelUpdateTask extends FetchGitHubRemoteTask {
     public CheckModelUpdateTask(StackPane root, GuiTaskStyle style) {
         super(
                 root,
@@ -38,7 +38,7 @@ public class CheckModelUpdateTask extends FetchGitHubRemoteTask {
 
     @Override
     protected String getHeader() {
-        return "正在下载模型版本信息...";
+        return "Downloading module version information...";
     }
 
     @Override
@@ -56,9 +56,9 @@ public class CheckModelUpdateTask extends FetchGitHubRemoteTask {
                 Logger.error("Checker", "Unable to parse remote model repo version, details see below.", e);
                 GuiPrefabs.DialogUtil.createCommonDialog(root,
                         GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_WARNING_ALT, GuiPrefabs.Colors.COLOR_WARNING),
-                        "检查模型更新",
-                        "无法判断模型仓库版本。",
-                        "因发生错误，无法解析远程模型仓库的版本。",
+                        "Check for module updates",
+                        "Unable to determine the module warehouse version.",
+                        "Unable to resolve the version of the remote module repository due to an error.",
                         null).show();
             }
             // When finished parsing the remote models info:
@@ -69,10 +69,10 @@ public class CheckModelUpdateTask extends FetchGitHubRemoteTask {
                 Logger.info("Checker", "Model repo version check finished (up-to-dated)");
                 GuiPrefabs.DialogUtil.createCommonDialog(root,
                         GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_SUCCESS_ALT, GuiPrefabs.Colors.COLOR_SUCCESS),
-                        "检查模型更新",
-                        "无需进行模型库更新。",
-                        "本地模型库的版本与远程模型库的一致。",
-                        "提示：远程模型库的版本不一定和游戏官方同步更新。\n模型库版本描述：\n" + versionDescription).show();
+                        "Check for module updates",
+                        "No module library updates are required.",
+                        "The version of the local module library is consistent with that of the remote module library.",
+                        "Tip: The version of the remote module library may not be updated simultaneously with the official version of the game.\nModule library version description: \n" + versionDescription).show();
             } else {
                 // If the result of comparison is "not the same"
                 String oldVersionDescription;
@@ -86,17 +86,17 @@ public class CheckModelUpdateTask extends FetchGitHubRemoteTask {
                     Logger.error("Checker", "Unable to parse local model repo version, details see below.", e);
                     GuiPrefabs.DialogUtil.createCommonDialog(root,
                             GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_WARNING_ALT, GuiPrefabs.Colors.COLOR_WARNING),
-                            "检查模型更新",
-                            "无法判断模型库版本。",
-                            "因发生错误，无法解析本地模型库的版本。",
+                            "Check for module updates",
+                            "Unable to determine the module library version.",
+                            "Unable to parse the version of the local module library due to an error.",
                             null).show();
                 }
                 GuiPrefabs.DialogUtil.createCommonDialog(root,
                         GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_INFO_ALT, GuiPrefabs.Colors.COLOR_INFO),
-                        "检查模型更新",
-                        "模型库似乎有更新！",
-                        "您可以 [重新下载] 模型，以更新模型库版本。",
-                        "远程模型库版本描述：\n" + versionDescription + "\n\n本地模型库版本描述：\n" + oldVersionDescription).show();
+                        "Check for module updates",
+                        "The module library seems to be updated!",
+                        "You can [re-download] the module to update the module library version.",
+                        "Remote module library version description:\n" + versionDescription + "\n\nLocal module library version description: \n" + oldVersionDescription).show();
                 Logger.info("Checker", "Model repo version check finished (not up-to-dated)");
             }
         } catch (IOException e) {

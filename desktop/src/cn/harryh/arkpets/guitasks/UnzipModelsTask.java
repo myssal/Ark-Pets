@@ -15,11 +15,11 @@ public class UnzipModelsTask extends UnzipTask {
 
     @Override
     protected String getHeader() {
-        return "正在解压模型资源文件...";
+        return "Unzipping model resource files...";
     }
 
     @Override
     protected String getInitialContent() {
-        return "这可能需要十几秒";
+        return "This may take several seconds";
     }
 }

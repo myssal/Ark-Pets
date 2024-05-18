@@ -33,6 +33,6 @@ public class DownloadModelsTask extends FetchGitHubRemoteTask {
 
     @Override
     protected String getHeader() {
-        return "正在下载模型资源文件...";
+        return "Downloading model resource files...";
     }
 }

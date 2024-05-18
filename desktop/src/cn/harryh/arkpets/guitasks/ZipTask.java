@@ -38,12 +38,12 @@ public class ZipTask extends GuiTask {
 
     @Override
     protected String getHeader() {
-        return "正在创建压缩文件...";
+        return "Creating compressed file...";
     }
 
     @Override
     protected String getInitialContent() {
-        return "这可能需要一些时间";
+        return "This may take some time";
     }
 
     @Override

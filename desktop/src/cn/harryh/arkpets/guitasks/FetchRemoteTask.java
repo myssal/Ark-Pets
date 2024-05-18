@@ -36,7 +36,7 @@ abstract public class FetchRemoteTask extends GuiTask {
             @Override
             protected Boolean call() throws Exception {
                 Logger.info("Network", "Fetching " + remotePath + " to " + destPath);
-                this.updateMessage("正在尝试建立连接");
+                this.updateMessage("Trying to establish connection");
 
                 NetUtils.BufferLog log = new NetUtils.BufferLog(httpBufferSizeDefault);
                 HttpsURLConnection connection = NetUtils.ConnectionUtil.createHttpsConnection(new URL(remotePath),
@@ -58,11 +58,11 @@ abstract public class FetchRemoteTask extends GuiTask {
                         sum += len;
                         log.receive();
                         long speed = log.getSpeedPerSecond(500);
-                        this.updateMessage("当前已下载：" + NetUtils.getFormattedSizeString(sum) +
+                        this.updateMessage("Currently downloaded: " + NetUtils.getFormattedSizeString(sum) +
                                 (speed != 0 ? " (" + NetUtils.getFormattedSizeString(speed) + "/s)" : ""));
                         this.updateProgress(sum, max);
                         if (this.isCancelled()) {
-                            this.updateMessage("下载进程已被取消");
+                            this.updateMessage("Download process has been canceled");
                             break;
                         }
                     }

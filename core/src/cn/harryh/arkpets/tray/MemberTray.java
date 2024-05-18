@@ -11,12 +11,12 @@ import java.util.UUID;
 
 
 public abstract class MemberTray {
-    protected JMenuItem optKeepAnimEn       = new JMenuItem("保持动作");
-    protected JMenuItem optKeepAnimDis      = new JMenuItem("取消保持");
-    protected JMenuItem optTransparentEn    = new JMenuItem("透明模式");
-    protected JMenuItem optTransparentDis   = new JMenuItem("取消透明");
-    protected JMenuItem optChangeStage      = new JMenuItem("切换形态");
-    protected JMenuItem optExit             = new JMenuItem("退出");
+    protected JMenuItem optKeepAnimEn       = new JMenuItem("Keep moving");
+    protected JMenuItem optKeepAnimDis      = new JMenuItem("Cancel hold");
+    protected JMenuItem optTransparentEn    = new JMenuItem("Transparent mode");
+    protected JMenuItem optTransparentDis   = new JMenuItem("Cancel transparency");
+    protected JMenuItem optChangeStage      = new JMenuItem("Switch form");
+    protected JMenuItem optExit             = new JMenuItem("Quit");
     protected final UUID uuid;
     protected final String name;
 

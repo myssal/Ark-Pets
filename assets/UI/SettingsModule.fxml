@@ -17,51 +17,51 @@
                     prefWidth="425.0" styleClass="config-field">
             <VBox>
                 <VBox fx:id="noticeBox"/>
-                <Label styleClass="config-group-title" text="显示设置"/>
+                <Label styleClass="config-group-title" text="Setting display"/>
                 <HBox>
-                    <Label text="图像缩放"/>
+                    <Label text="Image zoom"/>
                     <JFXComboBox fx:id="configDisplayScale" prefWidth="100.0"/>
                 </HBox>
                 <HBox>
-                    <Label text="最大帧率"/>
+                    <Label text="Max frame rate"/>
                     <JFXComboBox fx:id="configDisplayFps" prefWidth="100.0"/>
                 </HBox>
                 <HBox>
-                    <Label text="窗口边界"/>
+                    <Label text="Window border"/>
                     <JFXComboBox fx:id="configCanvasSize" prefWidth="100.0"/>
                     <JFXButton fx:id="configCanvasSizeHelp"/>
                 </HBox>
                 <Separator/>
-                <Label styleClass="config-group-title" text="高级设置"/>
+                <Label styleClass="config-group-title" text="Advanced settings"/>
                 <HBox>
-                    <JFXCheckBox fx:id="configAutoStartup" mnemonicParsing="false" text="开机自动生成桌宠"/>
-                    <JFXCheckBox fx:id="configSolidExit" mnemonicParsing="false" text="退出程序时也退出桌宠"/>
+                    <JFXCheckBox fx:id="configAutoStartup" mnemonicParsing="false" text="Automatically generate&#10;desktop pets when&#10;booting"/>
+                    <JFXCheckBox fx:id="configSolidExit" mnemonicParsing="false" text="When exit the program&#10;also exit the desktop&#10;pets."/>
                 </HBox>
                 <HBox>
-                    <JFXCheckBox fx:id="configWindowTopmost" mnemonicParsing="false" text="桌宠窗口置顶"/>
-                    <JFXCheckBox fx:id="configWindowToolwindow" mnemonicParsing="false" text="桌宠作为后台程序启动"/>
+                    <JFXCheckBox fx:id="configWindowTopmost" mnemonicParsing="false" text="Pin pet to top"/>
+                    <JFXCheckBox fx:id="configWindowToolwindow" mnemonicParsing="false" text="Program is started as&#10;a background program"/>
                     <JFXButton fx:id="configWindowToolwindowHelp"/>
                 </HBox>
                 <Separator/>
                 <HBox>
-                    <Label text="日志级别"/>
+                    <Label text="Log level"/>
                     <JFXComboBox fx:id="configLoggingLevel" prefWidth="100.0"/>
-                    <Label fx:id="exploreLogDir" styleClass="config-hyper-link" text="浏览日志"/>
+                    <Label fx:id="exploreLogDir" styleClass="config-hyper-link" text="View log"/>
                 </HBox>
                 <HBox>
-                    <Label text="网络代理（仅本次有效）"/>
+                    <Label text="Network proxy&#10;(valid this time only)"/>
                     <JFXTextField fx:id="configNetworkAgent" prefHeight="23.0" prefWidth="100.0"/>
                     <Label fx:id="configNetworkAgentStatus" alignment="TOP_CENTER" text="-"/>
                 </HBox>
                 <Separator/>
-                <Label styleClass="config-group-title" text="关于软件"/>
+                <Label styleClass="config-group-title" text="About"/>
                 <HBox spacing="22.5">
-                    <Label fx:id="aboutQueryUpdate" styleClass="config-hyper-link" text="检查软件更新"/>
-                    <Label fx:id="aboutVisitWebsite" styleClass="config-hyper-link" text="ArkPets 官网"/>
+                    <Label fx:id="aboutQueryUpdate" styleClass="config-hyper-link" text="Check updates"/>
+                    <Label fx:id="aboutVisitWebsite" styleClass="config-hyper-link" text="ArkPets Official Website"/>
                 </HBox>
                 <HBox spacing="22.5">
-                    <Label fx:id="aboutReadme" styleClass="config-hyper-link" text="使用指南"/>
-                    <Label fx:id="aboutGitHub" styleClass="config-hyper-link" text="GitHub 项目仓库"/>
+                    <Label fx:id="aboutReadme" styleClass="config-hyper-link" text="User guide"/>
+                    <Label fx:id="aboutGitHub" styleClass="config-hyper-link" text="GitHub project repository"/>
                 </HBox>
                 <Separator/>
             </VBox>

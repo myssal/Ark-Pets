@@ -215,8 +215,8 @@ public class GuiPrefabs {
             JFXDialog dialog = DialogUtil.createCenteredDialog(root, false);
 
             VBox content = new VBox();
-            Label h2 = DialogUtil.getPrefabsH2("啊哦~ ArkPets启动器抛出了一个异常。");
-            Label h3 = DialogUtil.getPrefabsH3("请重试操作，或查看帮助文档与日志。如需联系开发者，请提供下述信息：");
+            Label h2 = DialogUtil.getPrefabsH2("Oops~ The ArkPets launcher threw an exception.");
+            Label h3 = DialogUtil.getPrefabsH3("Please try the operation again, or check the help documentation and logs. To contact the developer, please provide the following information: ");
             content.setSpacing(5);
             content.getChildren().add(h2);
             content.getChildren().add(new Separator());
@@ -238,7 +238,7 @@ public class GuiPrefabs {
             layout.setBody(content);
 
             JFXButton button = new JFXButton();
-            button.setText("导出日志");
+            button.setText("Export log");
             button.setTextFill(Paint.valueOf(Colors.COLOR_WHITE));
             button.setStyle("-fx-font-size:13px;-fx-text-fill:" + Colors.COLOR_WHITE + ";-fx-background-color:" + Colors.COLOR_WARNING);
             button.setOnAction(ev -> {
@@ -266,44 +266,44 @@ public class GuiPrefabs {
             dialog.setContent(layout);
 
             if (e instanceof ProcessPool.UnexpectedExitCodeException) {
-                h2.setText("检测到桌宠异常退出");
-                h3.setText("桌宠运行时异常退出。如果该现象是在启动后立即发生的，可能是因为暂不支持该模型。您可以稍后重试或查看日志文件。");
+                h2.setText("Abnormal exit of pet detected!");
+                h3.setText("Desk Pet exited abnormally while running. If this phenomenon occurs immediately after startup, it may be because the model is not currently supported. You can try again later or view the log file.");
             } else if (e instanceof FileNotFoundException) {
-                h3.setText("未找到某个文件或目录，请稍后重试。详细信息：");
+                h3.setText("A file or directory was not found, please try again later. Details: ");
             } else if (e instanceof NetUtils.HttpResponseCodeException ex) {
-                h2.setText("神经递质接收异常");
+                h2.setText("Abnormal neurotransmitter reception");
                 switch (ex.getType()) {
-                    case REDIRECTION -> h3.setText("请求的网络地址被重定向转移。详细信息：");
+                    case REDIRECTION -> h3.setText("The requested network address is redirected. Details:");
                     case CLIENT_ERROR -> {
-                        h3.setText("可能是客户端引发的网络错误，详细信息：");
+                        h3.setText("It may be a network error caused by the client. Details:");
                         switch (ex.getCode()) {
-                            case 403 -> h3.setText("(403)访问被拒绝。详细信息：");
-                            case 404 -> h3.setText("(404)找不到要访问的目标。详细信息：");
+                            case 403 -> h3.setText("(403) Access denied. Details:");
+                            case 404 -> h3.setText("(404) The target to be accessed cannot be found. Details:");
                         }
                     }
                     case SERVER_ERROR -> {
-                        h3.setText("可能是服务器引发的网络错误，详细信息：");
+                        h3.setText("It may be a network error caused by the server. Details:");
                         switch (ex.getCode()) {
-                            case 500 -> h3.setText("(500)服务器内部故障，请稍后重试。详细信息：");
-                            case 502 -> h3.setText("(502)服务器网关故障，请稍后重试。详细信息：");
+                            case 500 -> h3.setText("(500) Internal server failure, please try again later. Details:");
+                            case 502 -> h3.setText("(502) Server gateway failure, please try again later. Details:");
                         }
                     }
                 }
             } else if (e instanceof UnknownHostException) {
-                h2.setText("无法建立神经连接");
-                h3.setText("找不到服务器地址。可能是因为网络未连接或DNS解析失败，请尝试更换网络环境、检查防火墙和代理设置。");
+                h2.setText("Unable to establish neural connections");
+                h3.setText("Server address not found. It may be because the network is not connected or DNS resolution fails. Please try changing the network environment and checking the firewall and proxy settings.");
             } else if (e instanceof ConnectException) {
-                h2.setText("无法建立神经连接");
-                h3.setText("在建立连接时发生了问题。请尝试更换网络环境、检查防火墙和代理设置。");
+                h2.setText("Unable to establish neural connections");
+                h3.setText("A problem occurred while establishing the connection. Please try changing the network environment and checking the firewall and proxy settings.");
             } else if (e instanceof SocketException) {
-                h2.setText("无法建立神经连接");
-                h3.setText("在访问套接字时发生了问题。请尝试更换网络环境、检查防火墙和代理设置。");
+                h2.setText("Unable to establish neural connections");
+                h3.setText("A problem occurred while accessing the socket. Please try changing the network environment and checking the firewall and proxy settings.");
             } else if (e instanceof SocketTimeoutException) {
-                h2.setText("神经递质接收异常");
-                h3.setText("接收数据超时。请尝试更换网络环境、检查防火墙和代理设置。");
+                h2.setText("Abnormal neurotransmitter reception");
+                h3.setText("Receiving data timed out. Please try changing the network environment and checking the firewall and proxy settings.");
             } else if (e instanceof SSLException) {
-                h2.setText("无法建立安全的神经连接");
-                h3.setText("SSL证书错误，请检查代理设置。您也可以尝试[信任]所有证书后重试刚才的操作。");
+                h2.setText("Unable to establish secure neural connections");
+                h3.setText("SSL certificate error, please check proxy settings. You can also try to [trust] all certificates and then try the operation again.");
                 JFXButton apply = DialogUtil.getTrustButton(dialog, root);
                 apply.setOnAction(ev -> {
                     Const.isHttpsTrustAll = true;
@@ -311,7 +311,7 @@ public class GuiPrefabs {
                 });
                 DialogUtil.attachAction(dialog, apply, 0);
             } else if (e instanceof ZipException) {
-                h3.setText("压缩文件相关错误。可能是文件不完整或已损坏，请稍后重试。");
+                h3.setText("Error related to compressed files. The file may be incomplete or corrupted, please try again later.");
             }
             return dialog;
         }
@@ -348,7 +348,7 @@ public class GuiPrefabs {
 
         public static JFXButton getCancelButton(JFXDialog dialog, StackPane root) {
             JFXButton button = new JFXButton();
-            button.setText("取 消");
+            button.setText("Cancel");
             button.setTextFill(Paint.valueOf(Colors.COLOR_WHITE));
             button.setStyle("-fx-font-size:13px;-fx-text-fill:" + Colors.COLOR_WHITE + ";-fx-background-color:" + Colors.COLOR_INFO);
             button.setOnAction(e -> disposeDialog(dialog, root));
@@ -357,7 +357,7 @@ public class GuiPrefabs {
 
         public static JFXButton getOkayButton(JFXDialog dialog, StackPane root) {
             JFXButton button = new JFXButton();
-            button.setText("确 认");
+            button.setText("Confirm");
             button.setTextFill(Paint.valueOf(Colors.COLOR_WHITE));
             button.setStyle("-fx-font-size:13px;-fx-text-fill:" + Colors.COLOR_WHITE + ";-fx-background-color:" + Colors.COLOR_INFO);
             button.setOnAction(e -> disposeDialog(dialog, root));
@@ -366,7 +366,7 @@ public class GuiPrefabs {
 
         public static JFXButton getGotoButton(JFXDialog dialog, StackPane root) {
             JFXButton button = new JFXButton();
-            button.setText("前 往");
+            button.setText("Go to");
             button.setStyle("-fx-font-size:13px;-fx-text-fill:" + Colors.COLOR_WHITE + ";-fx-background-color:" + Colors.COLOR_SUCCESS);
             button.setOnAction(e -> disposeDialog(dialog, root));
             return button;
@@ -374,7 +374,7 @@ public class GuiPrefabs {
 
         public static JFXButton getTrustButton(JFXDialog dialog, StackPane root) {
             JFXButton button = new JFXButton();
-            button.setText("信 任");
+            button.setText("Trust");
             button.setStyle("-fx-font-size:13px;-fx-text-fill:" + Colors.COLOR_WHITE + ";-fx-background-color:" + Colors.COLOR_WARNING);
             button.setOnAction(e -> disposeDialog(dialog, root));
             return button;

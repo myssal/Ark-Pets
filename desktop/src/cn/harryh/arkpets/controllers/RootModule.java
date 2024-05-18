@@ -218,12 +218,12 @@ public final class RootModule implements Controller<ArkHomeFX> {
     @FXML
     public void windowClose(MouseEvent event) {
         String solidExitTip = (app.config != null && app.config.launcher_solid_exit) ?
-            "退出程序将会同时退出已启动的桌宠。" : "退出程序后已启动的桌宠将会保留。";
+            "Exiting the program will also exit the started desktop pet." : "The started desktop pets will be retained after exiting the program.";
         GuiPrefabs.DialogUtil.createConfirmDialog(root,
                 GuiPrefabs.Icons.getIcon(GuiPrefabs.Icons.ICON_HELP_ALT, GuiPrefabs.Colors.COLOR_INFO),
-                "确认退出",
-                "现在退出 " + appName + " 吗？",
-                "根据您的设置，" + solidExitTip + "\n使用最小化 [-] 按钮可以隐藏窗口到系统托盘。",
+                "Confirm Exit?",
+                "Exit " + appName + " now?",
+                "Based on your setting，" + solidExitTip + "\nUse the minimize [-] button to hide the window to the system tray.",
                 this::exit).show();
     }
 
@@ -297,17 +297,17 @@ public final class RootModule implements Controller<ArkHomeFX> {
     private static class TrayExitHandBook extends Handbook {
         @Override
         public String getTitle() {
-            return "使用提示";
+            return "Use suggestions";
         }
 
         @Override
         public String getHeader() {
-            return "可以通过右键系统托盘图标来管理已启动的桌宠。";
+            return "Started desktop pets can be managed by right-clicking the system tray icon.";
         }
 
         @Override
         public String getContent() {
-            return "看来你已经启动了你的第一个 ArkPets 桌宠！尽情享受 ArkPets 吧！";
+            return "Looks like you've launched your first ArkPets table pet! Enjoy ArkPets! ";
         }
     }
 }

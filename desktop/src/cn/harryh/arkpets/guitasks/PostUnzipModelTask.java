@@ -29,12 +29,12 @@ public class PostUnzipModelTask extends GuiTask {
 
     @Override
     protected String getHeader() {
-        return "正在应用模型更新...";
+        return "Applying module updates...";
     }
 
     @Override
     protected String getInitialContent() {
-        return "即将完成";
+        return "Finish soon";
     }
 
     @Override

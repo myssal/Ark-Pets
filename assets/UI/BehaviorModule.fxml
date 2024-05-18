@@ -19,38 +19,38 @@
         <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0"
                     prefWidth="425.0" styleClass="config-field">
             <VBox>
-                <Label styleClass="config-group-title" text="动作"/>
+                <Label styleClass="config-group-title" text="Action"/>
                 <HBox>
-                    <JFXCheckBox fx:id="configBehaviorAllowWalk" mnemonicParsing="false" text="允许行走"/>
-                    <JFXCheckBox fx:id="configBehaviorAllowSit" mnemonicParsing="false" text="允许坐下"/>
+                    <JFXCheckBox fx:id="configBehaviorAllowWalk" mnemonicParsing="false" text="Walk allowed"/>
+                    <JFXCheckBox fx:id="configBehaviorAllowSit" mnemonicParsing="false" text="Sit allowed"/>
                 </HBox>
                 <HBox>
-                    <Label text="动作活跃度"/>
+                    <Label text="Movement activity"/>
                     <JFXSlider fx:id="configBehaviorAiActivation"/>
                     <Label fx:id="configBehaviorAiActivationValue" text="0"/>
                 </HBox>
                 <Separator/>
-                <Label styleClass="config-group-title" text="交互"/>
+                <Label styleClass="config-group-title" text="Interaction"/>
                 <HBox>
-                    <JFXCheckBox fx:id="configBehaviorAllowInteract" mnemonicParsing="false" text="允许触发交互动画"/>
+                    <JFXCheckBox fx:id="configBehaviorAllowInteract" mnemonicParsing="false" text="Allow triggering &#10;interactive animations"/>
                     <JFXCheckBox fx:id="configBehaviorDoPeerRepulsion" mnemonicParsing="false"
-                                 text="允许被其他桌宠排斥"/>
+                                 text="Allowed to be&#10;ostracized by other pets"/>
                 </HBox>
                 <Separator/>
-                <Label styleClass="config-group-title" text="位置"/>
+                <Label styleClass="config-group-title" text="Location"/>
                 <HBox>
-                    <JFXCheckBox fx:id="configDeployMultiMonitors" mnemonicParsing="false" text="启用多显示屏"/>
+                    <JFXCheckBox fx:id="configDeployMultiMonitors" mnemonicParsing="false" text="Enable multiple displays"/>
                     <Label fx:id="configDeployMultiMonitorsStatus" text="-"/>
                 </HBox>
                 <HBox>
-                    <Label text="任务栏高度（下边界距离）"/>
+                    <Label text="Taskbar height"/>
                     <JFXSlider fx:id="configDeployMarginBottom"/>
                     <Label fx:id="configDeployMarginBottomValue" text="0"/>
                 </HBox>
                 <HBox>
-                    <Label text="初始部署位置"/>
+                    <Label text="Initial deployment location"/>
                     <JFXButton fx:id="toggleConfigDeployPosition" minHeight="-Infinity" minWidth="-Infinity"
-                               mnemonicParsing="false" prefHeight="28.0" prefWidth="60.0" text="配置">
+                               mnemonicParsing="false" prefHeight="28.0" prefWidth="60.0" text="COnfiguration">
                         <graphic>
                             <AnchorPane prefHeight="25.0" prefWidth="16.0" scaleX="0.0" styleClass="btn-icon">
                                 <SVGPath
@@ -65,39 +65,39 @@
                     </JFXButton>
                 </HBox>
                 <HBox fx:id="wrapperConfigDeployPosition" managed="false" visible="false">
-                    <Label styleClass="config-help-text" text="在矩形区域内单击以选定桌宠生成时在屏幕中的初始位置"/>
+                    <Label styleClass="config-help-text" text="Click within the rectangular area to select the initial position&#10;on the screen where the table pet will spawn."/>
                     <Canvas fx:id="configDeployPosition" height="150.0" width="150.0"/>
                 </HBox>
                 <Separator/>
                 <Label styleClass="config-group-title" text="物理"/>
                 <HBox>
-                    <Label text="重力加速度"/>
+                    <Label text="Gravity Acceleration"/>
                     <JFXSlider fx:id="configPhysicGravity"/>
                     <Label fx:id="configPhysicGravityValue" text="0"/>
                 </HBox>
                 <HBox>
-                    <Label text="空气阻力系加速度"/>
+                    <Label text="Air Resistance Acceleration"/>
                     <JFXSlider fx:id="configPhysicAirFriction"/>
                     <Label fx:id="configPhysicAirFrictionValue" text="0"/>
                 </HBox>
                 <HBox>
-                    <Label text="地面摩擦系加速度"/>
+                    <Label text="Ground Friction&#10;System Acceleration"/>
                     <JFXSlider fx:id="configPhysicStaticFriction"/>
                     <Label fx:id="configPhysicStaticFrictionValue" text="0"/>
                 </HBox>
                 <HBox>
-                    <Label text="最大水平运动速率"/>
+                    <Label text="Maximum Horizontal&#10;Movement Rate"/>
                     <JFXSlider fx:id="configPhysicSpeedLimitX"/>
                     <Label fx:id="configPhysicSpeedLimitXValue" text="0"/>
                 </HBox>
                 <HBox>
-                    <Label text="最大垂直运动速率"/>
+                    <Label text="Maximum Vertical&#10;Movement Rate"/>
                     <JFXSlider fx:id="configPhysicSpeedLimitY"/>
                     <Label fx:id="configPhysicSpeedLimitYValue" text="0"/>
                 </HBox>
                 <Separator/>
                 <HBox spacing="22.5">
-                    <Label fx:id="configPhysicRestore" styleClass="config-hyper-link" text="恢复默认物理设置"/>
+                    <Label fx:id="configPhysicRestore" styleClass="config-hyper-link" text="Restore default&#10;physical settings"/>
                 </HBox>
                 <Separator/>
             </VBox>

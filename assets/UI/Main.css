@@ -146,8 +146,8 @@ JFXSlider {
 
 .menu-btn {
     /* Regular */
-    -fx-padding: 0 0 0 20px;
-    -fx-font-size: 18px;
+    -fx-padding: 0 0 0 5px;
+    -fx-font-size: 15px;
     -fx-font-weight: normal;
     -fx-fill: -theme-color;
     -fx-text-fill: -theme-color;

@@ -39,7 +39,7 @@ abstract public class FetchGitHubRemoteTask extends GuiTask {
         return new Task<>() {
             @Override
             protected Boolean call() throws Exception {
-                this.updateMessage("正在选择最佳线路");
+                this.updateMessage("Choosing the best route");
                 Logger.info("Network", "Testing real delay");
                 GitHubSource.sortByOverallAvailability(NetUtils.ghSources);
                 selectedSource = (GitHubSource)NetUtils.ghSources.get(0);
@@ -49,7 +49,7 @@ abstract public class FetchGitHubRemoteTask extends GuiTask {
                 String remotePath = remotePathPrefix + remotePathSuffix;
 
                 Logger.info("Network", "Fetching " + remotePath + " to " + destPath);
-                this.updateMessage("正在尝试与 " + selectedSource.tag + " 建立连接");
+                this.updateMessage("Trying with " + selectedSource.tag + " establish connection");
 
                 NetUtils.BufferLog log = new NetUtils.BufferLog(httpBufferSizeDefault);
                 HttpsURLConnection connection = NetUtils.ConnectionUtil.createHttpsConnection(new URL(remotePath),
@@ -71,11 +71,11 @@ abstract public class FetchGitHubRemoteTask extends GuiTask {
                         sum += len;
                         log.receive();
                         long speed = log.getSpeedPerSecond(500);
-                        this.updateMessage("当前已下载：" + NetUtils.getFormattedSizeString(sum) +
+                        this.updateMessage("Currently downloaded: " + NetUtils.getFormattedSizeString(sum) +
                                 (speed != 0 ? " (" + NetUtils.getFormattedSizeString(speed) + "/s)" : ""));
                         this.updateProgress(sum, max);
                         if (this.isCancelled()) {
-                            this.updateMessage("下载进程已被取消");
+                            this.updateMessage("Download process has been canceled");
                             selectedSource.receiveError();
                             break;
                         }

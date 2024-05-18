@@ -95,7 +95,7 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
 
         GuiComponents.SliderSetup<Integer> setupBehaviorAiActivation = new GuiComponents.SimpleIntegerSliderSetup(configBehaviorAiActivation);
         setupBehaviorAiActivation
-                .setDisplay(configBehaviorAiActivationValue, "%d 级", "活跃级别 (activation level)")
+                    .setDisplay(configBehaviorAiActivationValue, "%d level", "Activation level")
                 .setRange(0, 8)
                 .setTicks(1, 0)
                 .setSliderValue(app.config.behavior_ai_activation)
@@ -123,7 +123,7 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
 
         GuiComponents.SliderSetup<Integer> setupDeployMarginBottom = new GuiComponents.SimpleIntegerSliderSetup(configDeployMarginBottom);
         setupDeployMarginBottom
-                .setDisplay(configDeployMarginBottomValue, "%d px", "像素 (pixel)")
+                .setDisplay(configDeployMarginBottomValue, "%d px", "Pixel")
                 .setRange(0, 120)
                 .setTicks(10, 10)
                 .setSliderValue(app.config.display_margin_bottom)
@@ -151,7 +151,7 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
 
         GuiComponents.SliderSetup<Integer> setupPhysicGravity = new GuiComponents.SimpleMultipleIntegerSliderSetup(configPhysicGravity, 10);
         setupPhysicGravity
-                .setDisplay(configPhysicGravityValue, "%d px/s²", "像素每平方秒 (pixel/s²)")
+                .setDisplay(configPhysicGravityValue, "%d px/s²", "pixel/s²")
                 .setRange(0, 2000)
                 .setTicks(200, 10)
                 .setSliderValue(app.config.physic_gravity_acc)
@@ -161,7 +161,7 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
                 });
         GuiComponents.SliderSetup<Integer> setupPhysicAirFriction = new GuiComponents.SimpleMultipleIntegerSliderSetup(configPhysicAirFriction, 10);
         setupPhysicAirFriction
-                .setDisplay(configPhysicAirFrictionValue, "%d px/s²", "像素每平方秒 (pixel/s²)")
+                .setDisplay(configPhysicAirFrictionValue, "%d px/s²", "pixel/s²")
                 .setRange(0, 2000)
                 .setTicks(200, 10)
                 .setSliderValue(app.config.physic_air_friction_acc)
@@ -171,7 +171,7 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
                 });
         GuiComponents.SliderSetup<Integer> setupPhysicStaticFriction = new GuiComponents.SimpleMultipleIntegerSliderSetup(configPhysicStaticFriction, 10);
         setupPhysicStaticFriction
-                .setDisplay(configPhysicStaticFrictionValue, "%d px/s²", "像素每平方秒 (pixel/s²)")
+                .setDisplay(configPhysicStaticFrictionValue, "%d px/s²", "pixel/s²")
                 .setRange(0, 2000)
                 .setTicks(200, 10)
                 .setSliderValue(app.config.physic_static_friction_acc)
@@ -181,7 +181,7 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
                 });
         GuiComponents.SliderSetup<Integer> setupPhysicSpeedLimitX = new GuiComponents.SimpleMultipleIntegerSliderSetup(configPhysicSpeedLimitX, 10);
         setupPhysicSpeedLimitX
-                .setDisplay(configPhysicSpeedLimitXValue, "%d px/s", "像素每秒 (pixel/s)")
+                .setDisplay(configPhysicSpeedLimitXValue, "%d px/s", "pixel/s")
                 .setRange(0, 2000)
                 .setTicks(200, 10)
                 .setSliderValue(app.config.physic_speed_limit_x)
@@ -191,7 +191,7 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
                 });
         GuiComponents.SliderSetup<Integer> setupPhysicSpeedLimitY = new GuiComponents.SimpleMultipleIntegerSliderSetup(configPhysicSpeedLimitY, 10);
         setupPhysicSpeedLimitY
-                .setDisplay(configPhysicSpeedLimitYValue, "%d px/s", "像素每秒 (pixel/s)")
+                .setDisplay(configPhysicSpeedLimitYValue, "%d px/s", "pixel/s")
                 .setRange(0, 2000)
                 .setTicks(200, 10)
                 .setSliderValue(app.config.physic_speed_limit_y)
@@ -225,7 +225,7 @@ public final class BehaviorModule implements Controller<ArkHomeFX> {
                     }
                 };
                 task.setOnSucceeded(e ->
-                        configDeployMultiMonitorsStatus.setText("检测到 " + ArkConfig.Monitor.getMonitors().length + " 个显示屏"));
+                        configDeployMultiMonitorsStatus.setText("Detected " + ArkConfig.Monitor.getMonitors().length + " displays"));
                 return task;
             }
         };
