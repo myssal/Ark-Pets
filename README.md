@@ -19,6 +19,10 @@
    </sub>
 </div>
 
+## This fork intro
+   >English Translation for Ark-Pets app.
+
+   >Will gradually update over time.
 ## 介 绍 <sub>Intro</sub>
 
 ### 实现的功能

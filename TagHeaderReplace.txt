@@ -1,0 +1,18 @@
+//overwrite this into "sortTags" of models_data.json
+
+"sortTags": {
+        "DynIllust": "L2D",
+        "Operator": "Operator",
+        "Skinned": "Skin",
+        "Special": "Special",
+        "Enemy": "Enemy",
+        "EnemyNormal": "Enemy Normal",
+        "EnemyElite": "Enemy Elite",
+        "EnemyBoss": "Enemy Boss",
+        "Rarity_1": "1*",
+        "Rarity_2": "2*",
+        "Rarity_3": "3*",
+        "Rarity_4": "4*",
+        "Rarity_5": "5*",
+        "Rarity_6": "6*"
+    },
